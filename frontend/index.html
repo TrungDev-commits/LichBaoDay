@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auto Lịch Báo Dạy - Desktop Application</title>
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome 6 CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Vue 2 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.7.16/dist/vue.js"></script>
+    <!-- Axios CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --primary-light: #eff6ff;
+            --bg-color: #f1f5f9;
+            --card-bg: #ffffff;
+            --text-main: #0f172a;
+            --text-sub: #64748b;
+            --border-color: #cbd5e1;
+            --accent-green: #10b981;
+            --accent-green-hover: #059669;
+            --accent-amber: #f59e0b;
+            --accent-amber-hover: #d97706;
+            --shadow-md: 0 4px 12px -2px rgba(15, 23, 42, 0.08);
+            --shadow-lg: 0 10px 25px -5px rgba(15, 23, 42, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', system-ui, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.5;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Main Header Banner */
+        .header-banner {
+            background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+            color: white;
+            padding: 24px 36px;
+            box-shadow: var(--shadow-md);
+        }
+
+        .header-container {
+            max-width: 1240px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-title-box h1 {
+            font-size: 22px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        .header-title-box p {
+            font-size: 13px;
+            color: #93c5fd;
+            margin-top: 4px;
+            font-weight: 400;
+        }
+
+        .version-badge {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(4px);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* App Container */
+        .app-container {
+            max-width: 1240px;
+            margin: 24px auto;
+            padding: 0 20px;
+            flex: 1;
+            width: 100%;
+        }
+
+        /* Desktop Card Container */
+        .card {
+            background: var(--card-bg);
+            border-radius: 14px;
+            border: 1px solid #e2e8f0;
+            box-shadow: var(--shadow-md);
+            padding: 24px 28px;
+            margin-bottom: 24px;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-title i {
+            color: var(--primary);
+            font-size: 18px;
+        }
+
+        .step-pill {
+            background: var(--primary-light);
+            color: var(--primary);
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        /* Dropzone Upload Grid */
+        .dropzone-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .dropzone-box {
+            border: 2px dashed #cbd5e1;
+            border-radius: 12px;
+            padding: 26px 20px;
+            text-align: center;
+            background: #f8fafc;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .dropzone-box:hover {
+            border-color: var(--primary);
+            background: var(--primary-light);
+        }
+
+        .dropzone-box input[type="file"] {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .dropzone-icon-box {
+            width: 48px;
+            height: 48px;
+            background: white;
+            border-radius: 12px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+            color: var(--primary);
+            font-size: 22px;
+        }
+
+        .dropzone-label {
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--text-main);
+        }
+
+        .dropzone-sub {
+            font-size: 12px;
+            color: var(--text-sub);
+            margin-top: 4px;
+        }
+
+        .file-selected-badge {
+            margin-top: 10px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #dcfce7;
+            color: #15803d;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            word-break: break-all;
+        }
+
+        /* Mode Selection Pills */
+        .mode-selection-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .mode-button {
+            padding: 10px 18px;
+            border-radius: 8px;
+            background: #f1f5f9;
+            font-weight: 600;
+            font-size: 13px;
+            color: #475569;
+            cursor: pointer;
+            border: 1px solid var(--border-color);
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .mode-button:hover {
+            background: #e2e8f0;
+        }
+
+        .mode-button.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);
+        }
+
+        /* Control Panel Form */
+        .control-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-top: 20px;
+            background: #f8fafc;
+            padding: 16px 20px;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+            flex-wrap: wrap;
+        }
+
+        .input-label {
+            font-weight: 600;
+            font-size: 13px;
+            color: #334155;
+        }
+
+        .form-select, .form-input {
+            padding: 9px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 13px;
+            outline: none;
+            background: white;
+            font-weight: 500;
+            color: var(--text-main);
+        }
+
+        .form-select:focus, .form-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+        }
+
+        /* Action Buttons */
+        .btn-action {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 2px 6px rgba(37, 99, 235, 0.2);
+        }
+
+        .btn-action:hover {
+            background: var(--primary-hover);
+        }
+
+        .btn-green {
+            background: var(--accent-green);
+            box-shadow: 0 2px 6px rgba(16, 185, 129, 0.2);
+        }
+
+        .btn-green:hover {
+            background: var(--accent-green-hover);
+        }
+
+        .btn-amber {
+            background: var(--accent-amber);
+            box-shadow: 0 2px 6px rgba(245, 158, 11, 0.2);
+        }
+
+        .btn-amber:hover {
+            background: var(--accent-amber-hover);
+        }
+
+        .btn-action:disabled {
+            background: #94a3b8;
+            box-shadow: none;
+            cursor: not-allowed;
+        }
+
+        /* Week Navigation Tabs */
+        .week-nav-bar {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+            margin-bottom: 16px;
+        }
+
+        .week-nav-item {
+            padding: 6px 14px;
+            border-radius: 20px;
+            background: #f1f5f9;
+            font-size: 12px;
+            font-weight: 600;
+            color: #475569;
+            cursor: pointer;
+            white-space: nowrap;
+            border: 1px solid var(--border-color);
+            transition: all 0.15s ease;
+        }
+
+        .week-nav-item:hover {
+            background: #e2e8f0;
+        }
+
+        .week-nav-item.active {
+            background: #0f172a;
+            color: white;
+            border-color: #0f172a;
+        }
+
+        /* Data Table Styling */
+        .table-wrapper {
+            overflow-x: auto;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            font-size: 13px;
+        }
+
+        .data-table th {
+            background: #f1f5f9;
+            font-weight: 700;
+            color: #334155;
+            padding: 11px 12px;
+            border-bottom: 1px solid var(--border-color);
+            border-right: 1px solid #e2e8f0;
+            text-align: center;
+        }
+
+        .data-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #f1f5f9;
+            border-right: 1px solid #f1f5f9;
+        }
+
+        .data-table td input {
+            width: 100%;
+            border: 1px solid transparent;
+            padding: 6px 8px;
+            border-radius: 6px;
+            font-size: 13px;
+            color: var(--text-main);
+        }
+
+        .data-table td input:hover, .data-table td input:focus {
+            border-color: #cbd5e1;
+            background: #fff;
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+        }
+
+        .text-center { text-align: center; }
+
+        /* Footer Bar */
+        .footer-bar {
+            background: #0f172a;
+            color: #94a3b8;
+            padding: 16px 40px;
+            font-size: 12px;
+            border-top: 1px solid #1e293b;
+        }
+
+        .footer-content {
+            max-width: 1240px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .footer-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .footer-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 2px solid #fff;
+            width: 16px;
+            height: 16px;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div id="app" style="display: flex; flex-direction: column; min-height: 100vh;">
+
+        <!-- Main Banner Header -->
+        <header class="header-banner">
+            <div class="header-container">
+                <div class="header-title-box">
+                    <h1>
+                        <i class="fa-solid fa-calendar-days"></i>
+                        Hệ Thống Tự Động Tạo Lịch Báo Dạy
+                    </h1>
+                    <p>Bóc tách TKB + Phân phối chương trình → Tự động ghép bài dạy & xuất file Word chuẩn định dạng</p>
+                </div>
+                <div class="version-badge">
+                    <i class="fa-solid fa-code-branch"></i> Version 1.1.0
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Workspace -->
+        <main class="app-container">
+            <!-- Bước 1: Nạp Tệp Dữ Liệu -->
+            <section class="card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <span class="step-pill">1</span>
+                        <i class="fa-solid fa-folder-open"></i>
+                        <span>Nạp Tệp Dữ Liệu Thời Khóa Biểu & Giáo Án</span>
+                    </div>
+                </div>
+
+                <div class="dropzone-grid">
+                    <!-- Dropzone TKB -->
+                    <div class="dropzone-box">
+                        <input type="file" ref="fileTkbInput" @change="onFileTkbSelect" accept=".xlsx, .xls, .docx">
+                        <div class="dropzone-icon-box">
+                            <i class="fa-solid fa-file-excel"></i>
+                        </div>
+                        <div class="dropzone-label">Tệp 1: Thời Khóa Biểu Giảng Dạy</div>
+                        <div class="dropzone-sub">Kéo thả hoặc click chọn file TKB (.xlsx, .docx)</div>
+                        <div v-if="fileTkb" class="file-selected-badge">
+                            <i class="fa-solid fa-circle-check"></i> {{ fileTkb.name }}
+                        </div>
+                    </div>
+
+                    <!-- Dropzone PPCT -->
+                    <div class="dropzone-box">
+                        <input type="file" ref="filePpctInput" @change="onFilePpctSelect" accept=".docx, .xlsx, .xls, .pdf">
+                        <div class="dropzone-icon-box">
+                            <i class="fa-solid fa-file-word"></i>
+                        </div>
+                        <div class="dropzone-label">Tệp 2: Kế Hoạch Dạy Học / PPCT</div>
+                        <div class="dropzone-sub">Kéo thả hoặc click chọn file PPCT (.docx, .xlsx, .pdf)</div>
+                        <div v-if="filePpct" class="file-selected-badge">
+                            <i class="fa-solid fa-circle-check"></i> {{ filePpct.name }}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Thiết Lập Thời Gian -->
+                <div style="margin-top: 24px;">
+                    <div class="input-label" style="margin-bottom: 8px;">
+                        <i class="fa-solid fa-clock-rotate-left"></i> Phạm Vi Thời Gian Xuất Lịch:
+                    </div>
+                    <div class="mode-selection-group">
+                        <div class="mode-button" :class="{ active: mode === 'range' }" @click="setMode('range')">
+                            <i class="fa-solid fa-list-check"></i> Theo Khoảng Tuần
+                        </div>
+                        <div class="mode-button" :class="{ active: mode === 'month' }" @click="setMode('month')">
+                            <i class="fa-regular fa-calendar-days"></i> Theo Tháng Học
+                        </div>
+                        <div class="mode-button" :class="{ active: mode === 'year' }" @click="setMode('year')">
+                            <i class="fa-solid fa-graduation-cap"></i> Trọn Bộ Cả Năm (35 Tuần)
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form Controls -->
+                <div class="control-row">
+                    <template v-if="mode === 'range'">
+                        <span class="input-label">Từ Tuần:</span>
+                        <input type="number" v-model.number="startTuan" class="form-input" style="width: 80px;" min="1" max="35">
+                        <span class="input-label">Đến Tuần:</span>
+                        <input type="number" v-model.number="endTuan" class="form-input" style="width: 80px;" min="1" max="35">
+                    </template>
+
+                    <template v-if="mode === 'month'">
+                        <span class="input-label">Chọn Tháng:</span>
+                        <select v-model="selectedMonth" @change="onMonthChange" class="form-select">
+                            <option v-for="m in monthOptions" :key="m.value" :value="m.value">{{ m.label }}</option>
+                        </select>
+                        <span style="font-size: 13px; color: #64748b; font-weight: 500;">
+                            <i class="fa-solid fa-arrow-right-long"></i> Tuần {{ startTuan }} đến Tuần {{ endTuan }}
+                        </span>
+                    </template>
+
+                    <template v-if="mode === 'year'">
+                        <span style="font-size: 13px; font-weight: 600; color: #2563eb;">
+                            <i class="fa-solid fa-circle-info"></i> Hệ thống sẽ tự động ghép trọn bộ 35 Tuần học trong năm
+                        </span>
+                    </template>
+
+                    <button class="btn-action" @click="generatePreview" :disabled="!fileTkb || !filePpct || loading" style="margin-left: auto;">
+                        <span v-if="loading" class="spinner"></span>
+                        <i v-else class="fa-solid fa-bolt"></i>
+                        <span>{{ loading ? 'Đang Xử Lý Dữ Liệu...' : 'Xử Lý & Xem Trước' }}</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Bước 2: Bảng Xem Trước & Báo Cáo -->
+            <section v-if="Object.keys(multiSchedule).length > 0" class="card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <span class="step-pill">2</span>
+                        <i class="fa-solid fa-table-list"></i>
+                        <span>Bảng Xem Trước Lịch Báo Dạy (Đã Khớp {{ sortedWeeks.length }} Tuần)</span>
+                    </div>
+
+                    <div style="display: flex; gap: 10px;">
+                        <button class="btn-action btn-green" @click="exportMultiDocx">
+                            <i class="fa-solid fa-file-word"></i> Xuất File Word Gộp (.docx)
+                        </button>
+                        <button class="btn-action btn-amber" @click="exportZip">
+                            <i class="fa-solid fa-file-zipper"></i> Tải File ZIP (File Tách)
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Navigation chọn Tuần hiển thị preview -->
+                <div class="week-nav-bar">
+                    <div 
+                        v-for="w in sortedWeeks" 
+                        :key="w" 
+                        class="week-nav-item" 
+                        :class="{ active: activeWeek === w }"
+                        @click="activeWeek = w"
+                    >
+                        <i class="fa-regular fa-calendar"></i> Tuần {{ w }} ({{ multiSchedule[w].length }} tiết)
+                    </div>
+                </div>
+
+                <!-- Bảng Dữ Liệu Chi Tiết -->
+                <div v-if="activeWeekSchedule" class="table-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 75px;">Thứ</th>
+                                <th style="width: 75px;">Buổi</th>
+                                <th style="width: 75px;">Tiết TKB</th>
+                                <th style="width: 150px;">Môn Học</th>
+                                <th style="width: 85px;">Tiết PPCT</th>
+                                <th>Tên Bài Dạy / Nội Dung Bài Học</th>
+                                <th style="width: 180px;">Thiết Bị Dạy Học</th>
+                                <th style="width: 140px;">Ghi Chú</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="(row, idx) in activeWeekSchedule" :key="idx">
+                                <td class="text-center"><strong>{{ row.thu }}</strong></td>
+                                <td class="text-center">{{ row.buoi }}</td>
+                                <td class="text-center">{{ row.tiet_tkb }}</td>
+                                <td><strong>{{ row.mon }}</strong></td>
+                                <td class="text-center">
+                                    <input type="text" v-model="row.tiet_ppct" class="text-center">
+                                </td>
+                                <td>
+                                    <input type="text" v-model="row.ten_bai">
+                                </td>
+                                <td>
+                                    <input type="text" v-model="row.thiet_bi">
+                                </td>
+                                <td>
+                                    <input type="text" v-model="row.ghi_chu">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+
+        <!-- Desktop Application Footer Bar -->
+        <footer class="footer-bar">
+            <div class="footer-content">
+                <div class="footer-left">
+                    <span><i class="fa-regular fa-copyright"></i> 2026 <strong>Phát triển bởi Lâm Huệ Trung</strong></span>
+                </div>
+                <div class="footer-right">
+                    <span><i class="fa-solid fa-server"></i> Status: <strong style="color: #10b981;">Online</strong></span>
+                    <span><i class="fa-solid fa-shield-halved"></i> Auto Lịch Báo Dạy v1.1.0</span>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Hàm lưu file thông minh: Mở Native Windows Save Dialog cho phép chọn vị trí lưu
+        function handleFileSave(blob, defaultFilename) {
+            const reader = new FileReader();
+            reader.onload = async function() {
+                const dataUrl = reader.result;
+                const base64Data = dataUrl.split(',')[1];
+                
+                // Mở Native Save File Dialog của Windows nếu chạy trong Desktop App (.exe)
+                if (window.pywebview && window.pywebview.api && window.pywebview.api.save_file_dialog) {
+                    try {
+                        const result = await window.pywebview.api.save_file_dialog(defaultFilename, base64Data);
+                        if (result && result.success) {
+                            alert('✅ Đã xuất và lưu file thành công tại:\n' + result.path);
+                        } else if (result && result.error) {
+                            alert('⚠️ Lỗi khi lưu file: ' + result.error);
+                        }
+                    } catch (e) {
+                        fallbackDownload(dataUrl, defaultFilename);
+                    }
+                } else {
+                    fallbackDownload(dataUrl, defaultFilename);
+                }
+            };
+            reader.readAsDataURL(blob);
+        }
+
+        function fallbackDownload(dataUrl, filename) {
+            const link = document.createElement('a');
+            link.href = dataUrl;
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            setTimeout(function() {
+                document.body.removeChild(link);
+            }, 100);
+        }
+
+        new Vue({
+            el: '#app',
+            data: {
+                fileTkb: null,
+                filePpct: null,
+                mode: 'range',
+                startTuan: 1,
+                endTuan: 1,
+                selectedMonth: 9,
+                loading: false,
+                multiSchedule: {},
+                activeWeek: 1,
+                apiUrl: window.location.origin,
+                monthOptions: [
+                    { label: 'Tháng 9 (Tuần 1 - 4)', value: 9, start: 1, end: 4 },
+                    { label: 'Tháng 10 (Tuần 5 - 8)', value: 10, start: 5, end: 8 },
+                    { label: 'Tháng 11 (Tuần 9 - 12)', value: 11, start: 9, end: 12 },
+                    { label: 'Tháng 12 (Tuần 13 - 16)', value: 12, start: 13, end: 16 },
+                    { label: 'Tháng 1 (Tuần 17 - 20)', value: 1, start: 17, end: 20 },
+                    { label: 'Tháng 2 (Tuần 21 - 24)', value: 2, start: 21, end: 24 },
+                    { label: 'Tháng 3 (Tuần 25 - 28)', value: 3, start: 25, end: 28 },
+                    { label: 'Tháng 4 (Tuần 29 - 32)', value: 4, start: 29, end: 32 },
+                    { label: 'Tháng 5 (Tuần 33 - 35)', value: 5, start: 33, end: 35 },
+                ]
+            },
+            computed: {
+                sortedWeeks() {
+                    return Object.keys(this.multiSchedule).map(Number).sort((a, b) => a - b);
+                },
+                activeWeekSchedule() {
+                    return this.multiSchedule[this.activeWeek] || [];
+                }
+            },
+            methods: {
+                setMode(m) {
+                    this.mode = m;
+                    if (m === 'year') {
+                        this.startTuan = 1;
+                        this.endTuan = 35;
+                    } else if (m === 'month') {
+                        this.onMonthChange();
+                    }
+                },
+                onMonthChange() {
+                    const opt = this.monthOptions.find(o => o.value === this.selectedMonth);
+                    if (opt) {
+                        this.startTuan = opt.start;
+                        this.endTuan = opt.end;
+                    }
+                },
+                onFileTkbSelect(event) {
+                    this.fileTkb = event.target.files[0] || null;
+                },
+                onFilePpctSelect(event) {
+                    this.filePpct = event.target.files[0] || null;
+                },
+                async generatePreview() {
+                    if (!this.fileTkb || !this.filePpct) return;
+                    this.loading = true;
+                    
+                    const formData = new FormData();
+                    formData.append('start_tuan', this.startTuan);
+                    formData.append('end_tuan', this.endTuan);
+                    formData.append('file_tkb', this.fileTkb);
+                    formData.append('file_ppct', this.filePpct);
+
+                    try {
+                        const res = await axios.post(`${this.apiUrl}/api/generate-preview`, formData, {
+                            headers: { 'Content-Type': 'multipart/form-data' }
+                        });
+                        this.multiSchedule = res.data;
+                        if (this.sortedWeeks.length > 0) {
+                            this.activeWeek = this.sortedWeeks[0];
+                        }
+                    } catch (err) {
+                        let errorMsg = 'Không thể kết nối đến Backend hoặc server bị lỗi.';
+                        if (err.response && err.response.data && err.response.data.detail) {
+                            errorMsg = err.response.data.detail;
+                        } else if (err.message) {
+                            errorMsg = err.message;
+                        }
+                        alert('⚠️ Lỗi: ' + errorMsg);
+                    } finally {
+                        this.loading = false;
+                    }
+                },
+                async exportMultiDocx() {
+                    if (Object.keys(this.multiSchedule).length === 0) return;
+                    try {
+                        const payload = { multi_schedule: this.multiSchedule };
+                        const res = await axios.post(`${this.apiUrl}/api/export-multi-docx`, payload, {
+                            responseType: 'blob'
+                        });
+                        const blob = new Blob([res.data], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+                        handleFileSave(blob, `Lich_Bao_Day_Tuan_${this.startTuan}_den_${this.endTuan}.docx`);
+                    } catch (err) {
+                        alert('Lỗi khi xuất file Word: ' + err.message);
+                    }
+                },
+                async exportZip() {
+                    if (Object.keys(this.multiSchedule).length === 0) return;
+                    try {
+                        const payload = { multi_schedule: this.multiSchedule };
+                        const res = await axios.post(`${this.apiUrl}/api/export-zip`, payload, {
+                            responseType: 'blob'
+                        });
+                        const blob = new Blob([res.data], { type: 'application/zip' });
+                        handleFileSave(blob, `Lich_Bao_Day_Tuan_${this.startTuan}_den_${this.endTuan}.zip`);
+                    } catch (err) {
+                        alert('Lỗi khi xuất file ZIP: ' + err.message);
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
