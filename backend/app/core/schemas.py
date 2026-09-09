@@ -1,4 +1,5 @@
 from pydantic import BaseModel, Field
+<<<<<<< HEAD
 from typing import Optional, List, Dict, Any
 from dataclasses import dataclass, field
 
@@ -12,26 +13,38 @@ class LessonBlock:
     tiet_ppct: int
     ten_bai: str
     elements: List[Any] = field(default_factory=list)  # docx Paragraph/Table objects
+=======
+from typing import Optional, List
+>>>>>>> bbe273c0b4829ef92cb6e00e1b3f26809e413907
 
 class TKBSlot(BaseModel):
     thu: str = Field(..., description="Thứ trong tuần (VD: Hai, Ba, Tư, Năm, Sáu)")
     buoi: str = Field("Sáng", description="Buổi học (Sáng / Chiều)")
     tiet_tkb: int = Field(..., description="Tiết theo TKB (1-5)")
     mon: str = Field(..., description="Tên môn học")
+<<<<<<< HEAD
     lop: Optional[str] = Field("5/5", description="Tên lớp học")
+=======
+    lop: Optional[str] = Field("3A", description="Tên lớp học")
+>>>>>>> bbe273c0b4829ef92cb6e00e1b3f26809e413907
 
 class BaiHoc(BaseModel):
     mon: str = Field(..., description="Tên môn học")
     tiet_ppct: int = Field(..., description="Tiết thứ bao nhiêu theo PPCT")
     ten_bai: str = Field(..., description="Tên bài dạy / Tên bài học")
     thiet_bi: Optional[str] = Field("", description="Đồ dùng / Thiết bị dạy học")
+<<<<<<< HEAD
     ghi_chu: Optional[str] = Field("", description="Ghi chú thêm / Nội dung điều chỉnh")
+=======
+    ghi_chu: Optional[str] = Field("", description="Ghi chú thêm (VD: Tích hợp Stem...)")
+>>>>>>> bbe273c0b4829ef92cb6e00e1b3f26809e413907
 
 class ScheduleRow(BaseModel):
     thu: str
     buoi: str
     tiet_tkb: int
     mon: str
+<<<<<<< HEAD
     lop: str = "5/5"
     tiet_ppct: str
     ten_bai: str
@@ -46,3 +59,9 @@ class ParseTkbResponse(BaseModel):
     unique_subjects: List[str]
     slots: List[TKBSlot]
 
+=======
+    tiet_ppct: str
+    ten_bai: str
+    thiet_bi: str
+    ghi_chu: str
+>>>>>>> bbe273c0b4829ef92cb6e00e1b3f26809e413907

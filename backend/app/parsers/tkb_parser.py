@@ -103,6 +103,7 @@ def parse_tkb_docx(file_bytes: bytes) -> List[TKBSlot]:
                         day_cols[c_idx] = "Sáu"
                 continue
 
+<<<<<<< HEAD
             first_cell = cells_text[0].lower() if len(cells_text) > 0 else ""
             second_cell = cells_text[1].strip() if len(cells_text) > 1 else ""
 
@@ -111,10 +112,19 @@ def parse_tkb_docx(file_bytes: bytes) -> List[TKBSlot]:
                 tiet_counter = 1
                 continue
             elif "sáng" in first_cell and not second_cell.isdigit():
+=======
+            row_joined = " ".join(cells_text).lower()
+            if "chiều" in row_joined:
+                current_buoi = "Chiều"
+                tiet_counter = 1
+                continue
+            elif "sáng" in row_joined:
+>>>>>>> bbe273c0b4829ef92cb6e00e1b3f26809e413907
                 current_buoi = "Sáng"
                 tiet_counter = 1
                 continue
 
+<<<<<<< HEAD
             if "chiều" in first_cell:
                 current_buoi = "Chiều"
             elif "sáng" in first_cell:
@@ -124,18 +134,29 @@ def parse_tkb_docx(file_bytes: bytes) -> List[TKBSlot]:
             if second_cell.isdigit():
                 tiet_num = int(second_cell)
 
+=======
+>>>>>>> bbe273c0b4829ef92cb6e00e1b3f26809e413907
             has_mon = False
             for c_idx, thu_name in day_cols.items():
                 if c_idx < len(cells_text):
                     mon_name = cells_text[c_idx]
+<<<<<<< HEAD
                     if mon_name and not mon_name.isdigit() and len(mon_name) > 1 and "NGHỈ GIẢI LAO" not in mon_name.upper():
+=======
+                    if mon_name and not mon_name.isdigit() and len(mon_name) > 1:
+>>>>>>> bbe273c0b4829ef92cb6e00e1b3f26809e413907
                         has_mon = True
                         slots.append(TKBSlot(
                             thu=thu_name,
                             buoi=current_buoi,
+<<<<<<< HEAD
                             tiet_tkb=tiet_num,
                             mon=mon_name,
                             lop="5/5"
+=======
+                            tiet_tkb=tiet_counter,
+                            mon=mon_name
+>>>>>>> bbe273c0b4829ef92cb6e00e1b3f26809e413907
                         ))
             if has_mon:
                 tiet_counter += 1
@@ -163,6 +184,7 @@ def auto_parse_tkb(file_bytes: bytes, filename: str) -> List[TKBSlot]:
             continue
 
     return []
+<<<<<<< HEAD
 
 def extract_unique_subjects(slots: List[TKBSlot]) -> List[str]:
     """
@@ -177,3 +199,5 @@ def extract_unique_subjects(slots: List[TKBSlot]) -> List[str]:
             unique.append(mon_clean)
     return unique
 
+=======
+>>>>>>> bbe273c0b4829ef92cb6e00e1b3f26809e413907
