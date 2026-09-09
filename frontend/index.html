@@ -30,7 +30,9 @@
             --accent-red-hover: #dc2626;
             --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
             --shadow-md: 0 4px 12px -2px rgba(15, 23, 42, 0.08);
-            --shadow-lg: 0 10px 25px -5px rgba(15, 23, 42, 0.1);
+            --shadow-lg: 0 10px 25px -5px rgba(15, 23, 42, 0.12);
+            --header-height: 72px;
+            --footer-height: 52px;
         }
 
         * {
@@ -47,19 +49,29 @@
             display: flex;
             flex-direction: column;
             min-height: 100vh;
+            overflow-x: hidden;
         }
 
-        /* Header Banner */
+        /* 1. FIXED HEADER BANNER */
         .header-banner {
-            background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--header-height);
+            z-index: 1000;
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #2563eb 100%);
             color: white;
-            padding: 22px 32px;
-            box-shadow: var(--shadow-md);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.18);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(12px);
         }
 
         .header-container {
-            max-width: 1240px;
+            max-width: 1280px;
+            height: 100%;
             margin: 0 auto;
+            padding: 0 24px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -77,64 +89,103 @@
             justify-content: center;
             background: rgba(255, 255, 255, 0.15);
             backdrop-filter: blur(8px);
-            border-radius: 14px;
+            border-radius: 12px;
             padding: 6px;
             border: 1px solid rgba(255, 255, 255, 0.25);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
             transition: all 0.3s ease;
         }
 
         .header-logo-wrapper:hover {
-            transform: scale(1.06) rotate(-2deg);
+            transform: scale(1.05) rotate(-2deg);
             background: rgba(255, 255, 255, 0.25);
         }
 
         .app-header-logo {
-            width: 50px;
-            height: 50px;
+            width: 38px;
+            height: 38px;
             object-fit: contain;
             filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
         }
 
         .header-title-box h1 {
-            font-size: 22px;
+            font-size: 18px;
             font-weight: 800;
             display: flex;
             align-items: center;
-            gap: 12px;
-            letter-spacing: -0.5px;
+            gap: 10px;
+            letter-spacing: -0.3px;
+            color: #ffffff;
         }
 
-
         .header-title-box p {
-            font-size: 13px;
+            font-size: 12px;
             color: #93c5fd;
-            margin-top: 4px;
+            margin-top: 2px;
             font-weight: 400;
         }
 
-        .version-badge {
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(4px);
-            padding: 5px 12px;
+        .header-right-badges {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-status-badge {
+            background: rgba(16, 185, 129, 0.2);
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            color: #34d399;
+            padding: 4px 12px;
             border-radius: 20px;
             font-size: 12px;
             font-weight: 600;
-            border: 1px solid rgba(255, 255, 255, 0.25);
             display: flex;
             align-items: center;
             gap: 6px;
         }
 
-        /* Main Workspace */
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #34d399;
+            border-radius: 50%;
+            box-shadow: 0 0 8px #34d399;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.95); opacity: 0.8; }
+            50% { transform: scale(1.25); opacity: 1; }
+            100% { transform: scale(0.95); opacity: 0.8; }
+        }
+
+        .version-badge {
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(4px);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* 2. MAIN WORKSPACE CONTAINER WITH FIXED CLEARANCE */
         .app-container {
-            max-width: 1240px;
-            margin: 24px auto;
-            padding: 0 20px;
+            max-width: 1280px;
+            margin: 0 auto;
+            padding-top: calc(var(--header-height) + 24px);
+            padding-bottom: calc(var(--footer-height) + 24px);
+            padding-left: 24px;
+            padding-right: 24px;
             flex: 1;
             width: 100%;
         }
 
+        /* CARD STYLING & LAYOUT */
         .card {
             background: var(--card-bg);
             border-radius: 16px;
@@ -142,6 +193,11 @@
             box-shadow: var(--shadow-md);
             padding: 24px 28px;
             margin-bottom: 24px;
+            transition: all 0.2s ease;
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow-lg);
         }
 
         .card-header {
@@ -159,31 +215,32 @@
             color: var(--text-main);
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
         }
 
         .step-pill {
-            background: var(--primary-light);
-            color: var(--primary);
-            width: 28px;
-            height: 28px;
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: white;
+            width: 30px;
+            height: 30px;
             border-radius: 50%;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            font-size: 13px;
+            font-size: 14px;
             font-weight: 800;
+            box-shadow: 0 3px 8px rgba(37, 99, 235, 0.3);
         }
 
-        /* Form Grid */
+        /* FORM GRID & INPUTS */
         .info-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
             gap: 16px;
             margin-bottom: 20px;
             background: #f8fafc;
-            padding: 18px 20px;
-            border-radius: 12px;
+            padding: 20px;
+            border-radius: 14px;
             border: 1px solid #e2e8f0;
         }
 
@@ -199,12 +256,15 @@
             color: #475569;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
         .form-input, .form-select {
-            padding: 9px 12px;
+            padding: 10px 14px;
             border: 1px solid var(--border-color);
-            border-radius: 8px;
+            border-radius: 10px;
             font-size: 13px;
             outline: none;
             background: white;
@@ -218,11 +278,11 @@
             box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
         }
 
-        /* Dropzone TKB */
+        /* DROPZONE FOR TKB */
         .dropzone-box {
             border: 2px dashed #cbd5e1;
-            border-radius: 12px;
-            padding: 24px 20px;
+            border-radius: 14px;
+            padding: 28px 24px;
             text-align: center;
             background: #f8fafc;
             cursor: pointer;
@@ -233,22 +293,29 @@
         .dropzone-box:hover {
             border-color: var(--primary);
             background: var(--primary-light);
+            transform: translateY(-1px);
+        }
+
+        .dropzone-box.has-file {
+            border-color: var(--accent-green);
+            background: #f0fdf4;
         }
 
         .dropzone-box input[type="file"] {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            cursor: pointer;
+            top: 0; left: 0; width: 100%; height: 100%;
+            opacity: 0; cursor: pointer;
         }
 
         .dropzone-icon {
-            font-size: 32px;
+            font-size: 36px;
             color: var(--primary);
-            margin-bottom: 8px;
+            margin-bottom: 10px;
+            transition: transform 0.2s ease;
+        }
+
+        .dropzone-box:hover .dropzone-icon {
+            transform: scale(1.1);
         }
 
         .dropzone-label {
@@ -258,19 +325,20 @@
         }
 
         .file-selected-badge {
-            margin-top: 10px;
+            margin-top: 12px;
             display: inline-flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
             background: #dcfce7;
             color: #15803d;
-            padding: 5px 14px;
+            padding: 6px 16px;
             border-radius: 20px;
-            font-size: 12px;
+            font-size: 13px;
             font-weight: 600;
+            box-shadow: 0 2px 6px rgba(16, 185, 129, 0.15);
         }
 
-        /* Dynamic CRUD Subject Boxes Grid */
+        /* DYNAMIC CRUD SUBJECT BOXES GRID */
         .subject-boxes-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
@@ -279,20 +347,26 @@
         }
 
         .subject-box-card {
-            background: #f8fafc;
+            background: #ffffff;
             border: 1px solid #e2e8f0;
-            border-radius: 12px;
-            padding: 16px;
+            border-radius: 14px;
+            padding: 18px;
             display: flex;
             flex-direction: column;
             gap: 12px;
             position: relative;
             transition: all 0.2s ease;
+            box-shadow: var(--shadow-sm);
         }
 
         .subject-box-card:hover {
             border-color: #cbd5e1;
-            box-shadow: var(--shadow-sm);
+            box-shadow: var(--shadow-md);
+        }
+
+        .subject-box-card.has-file {
+            border-color: #93c5fd;
+            background: #f8fafc;
         }
 
         .box-header {
@@ -305,16 +379,17 @@
         .box-subject-input {
             flex: 1;
             font-weight: 700;
-            font-size: 13px;
+            font-size: 14px;
+            color: #1e293b;
         }
 
         .btn-delete-box {
             background: #fee2e2;
             color: var(--accent-red);
             border: none;
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
@@ -331,11 +406,11 @@
             position: relative;
             background: white;
             border: 1px dashed var(--border-color);
-            border-radius: 8px;
-            padding: 10px 14px;
+            border-radius: 10px;
+            padding: 12px 14px;
             text-align: center;
             cursor: pointer;
-            font-size: 12px;
+            font-size: 13px;
             font-weight: 600;
             color: var(--text-sub);
             transition: all 0.2s ease;
@@ -347,6 +422,12 @@
             background: var(--primary-light);
         }
 
+        .file-input-wrapper.active {
+            border-color: var(--accent-green);
+            background: #f0fdf4;
+            color: #166534;
+        }
+
         .file-input-wrapper input[type="file"] {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -354,15 +435,16 @@
         }
 
         .btn-add-box {
-            background: white;
+            background: #ffffff;
             color: var(--primary);
-            border: 2px dashed var(--primary);
-            border-radius: 12px;
+            border: 2px dashed #93c5fd;
+            border-radius: 14px;
             padding: 16px;
             font-weight: 700;
-            font-size: 13px;
+            font-size: 14px;
             cursor: pointer;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             gap: 8px;
@@ -372,81 +454,294 @@
 
         .btn-add-box:hover {
             background: var(--primary-light);
+            border-color: var(--primary);
         }
 
-        /* Action Buttons */
+        /* 3. PROGRESS BAR COMPONENT */
+        .progress-card {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: white;
+            border-radius: 16px;
+            padding: 22px 28px;
+            margin-bottom: 24px;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            position: relative;
+            overflow: hidden;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .progress-title-box {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+            font-size: 15px;
+            color: #f8fafc;
+        }
+
+        .progress-percent-badge {
+            background: rgba(37, 99, 235, 0.35);
+            border: 1px solid #60a5fa;
+            color: #93c5fd;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-weight: 800;
+            font-size: 13px;
+            letter-spacing: 0.5px;
+        }
+
+        .progress-track {
+            height: 12px;
+            background: rgba(255, 255, 255, 0.12);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 10px;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #2563eb 0%, #10b981 100%);
+            border-radius: 10px;
+            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(
+                90deg,
+                rgba(255,255,255,0) 0%,
+                rgba(255,255,255,0.4) 50%,
+                rgba(255,255,255,0) 100%
+            );
+            animation: shimmer 1.5s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .progress-detail {
+            font-size: 13px;
+            color: #94a3b8;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* 4. TOAST NOTIFICATION CONTAINER & ITEMS */
+        .toast-container {
+            position: fixed;
+            top: calc(var(--header-height) + 16px);
+            right: 24px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-width: 420px;
+            width: calc(100% - 48px);
+            pointer-events: none;
+        }
+
+        .toast-item {
+            pointer-events: auto;
+            background: #ffffff;
+            border-radius: 14px;
+            padding: 14px 18px;
+            box-shadow: 0 12px 32px rgba(15, 23, 42, 0.18), 0 2px 8px rgba(0,0,0,0.06);
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            border-left: 5px solid #2563eb;
+            position: relative;
+            overflow: hidden;
+            animation: toastSlideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: all 0.3s ease;
+        }
+
+        .toast-item.toast-success {
+            border-left-color: #10b981;
+            background: #ffffff;
+        }
+
+        .toast-item.toast-error {
+            border-left-color: #ef4444;
+            background: #ffffff;
+        }
+
+        .toast-item.toast-warning {
+            border-left-color: #f59e0b;
+            background: #ffffff;
+        }
+
+        .toast-item.toast-info {
+            border-left-color: #3b82f6;
+            background: #ffffff;
+        }
+
+        .toast-icon {
+            font-size: 22px;
+            margin-top: 1px;
+            flex-shrink: 0;
+        }
+
+        .toast-success .toast-icon { color: #10b981; }
+        .toast-error .toast-icon { color: #ef4444; }
+        .toast-warning .toast-icon { color: #f59e0b; }
+        .toast-info .toast-icon { color: #3b82f6; }
+
+        .toast-content {
+            flex: 1;
+        }
+
+        .toast-title {
+            font-weight: 700;
+            font-size: 14px;
+            color: #0f172a;
+            margin-bottom: 2px;
+        }
+
+        .toast-message {
+            font-size: 13px;
+            color: #475569;
+            line-height: 1.45;
+            word-break: break-word;
+        }
+
+        .toast-close {
+            background: transparent;
+            border: none;
+            color: #94a3b8;
+            cursor: pointer;
+            font-size: 14px;
+            padding: 2px;
+            transition: color 0.2s ease;
+        }
+
+        .toast-close:hover {
+            color: #0f172a;
+        }
+
+        .toast-progress {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 3px;
+            background: rgba(0, 0, 0, 0.12);
+            width: 100%;
+        }
+
+        .toast-success .toast-progress { background: #10b981; }
+        .toast-error .toast-progress { background: #ef4444; }
+        .toast-warning .toast-progress { background: #f59e0b; }
+        .toast-info .toast-progress { background: #3b82f6; }
+
+        @keyframes toastSlideIn {
+            from {
+                opacity: 0;
+                transform: translateX(80px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0) scale(1);
+            }
+        }
+
+        /* ACTION BUTTONS */
         .btn-action {
-            background: var(--primary);
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
             color: white;
             border: none;
             padding: 12px 24px;
-            border-radius: 10px;
+            border-radius: 12px;
             font-weight: 700;
             font-size: 14px;
             cursor: pointer;
             transition: all 0.2s ease;
             display: inline-flex;
             align-items: center;
-            gap: 8px;
-            box-shadow: 0 4px 10px rgba(37, 99, 235, 0.25);
+            gap: 10px;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
         }
 
         .btn-action:hover {
-            background: var(--primary-hover);
+            background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 18px rgba(37, 99, 235, 0.4);
         }
 
         .btn-green {
-            background: var(--accent-green);
-            box-shadow: 0 4px 10px rgba(16, 185, 129, 0.25);
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3);
         }
 
         .btn-green:hover {
-            background: var(--accent-green-hover);
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            box-shadow: 0 6px 18px rgba(16, 185, 129, 0.4);
         }
 
         .btn-action:disabled {
             background: #94a3b8;
             box-shadow: none;
             cursor: not-allowed;
+            transform: none;
         }
 
-        /* Week Navigation Tabs */
+        /* WEEK NAVIGATION TABS */
         .week-nav-bar {
             display: flex;
             gap: 8px;
             overflow-x: auto;
-            padding-bottom: 8px;
+            padding-bottom: 10px;
             margin-bottom: 16px;
         }
 
         .week-nav-item {
-            padding: 7px 16px;
+            padding: 8px 18px;
             border-radius: 20px;
             background: #f1f5f9;
-            font-size: 12px;
+            font-size: 13px;
             font-weight: 700;
             color: #475569;
             cursor: pointer;
             white-space: nowrap;
             border: 1px solid var(--border-color);
-            transition: all 0.15s ease;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .week-nav-item:hover {
             background: #e2e8f0;
+            color: #0f172a;
         }
 
         .week-nav-item.active {
             background: #0f172a;
             color: white;
             border-color: #0f172a;
+            box-shadow: 0 4px 10px rgba(15, 23, 42, 0.2);
         }
 
-        /* Data Table Styling */
+        /* DATA TABLE STYLING */
         .table-wrapper {
             overflow-x: auto;
             border-radius: 12px;
             border: 1px solid #e2e8f0;
+            box-shadow: var(--shadow-sm);
         }
 
         .data-table {
@@ -461,9 +756,12 @@
             font-weight: 700;
             color: #334155;
             padding: 12px 14px;
-            border-bottom: 1px solid var(--border-color);
+            border-bottom: 2px solid var(--border-color);
             border-right: 1px solid #e2e8f0;
             text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 10;
         }
 
         .data-table td {
@@ -472,40 +770,97 @@
             border-right: 1px solid #f1f5f9;
         }
 
+        .data-table tbody tr:hover {
+            background-color: #f8fafc;
+        }
+
         .data-table td input {
             width: 100%;
             border: 1px solid transparent;
-            padding: 6px 8px;
+            padding: 6px 10px;
             border-radius: 6px;
             font-size: 13px;
             color: var(--text-main);
+            transition: all 0.2s ease;
         }
 
         .data-table td input:hover, .data-table td input:focus {
             border-color: #cbd5e1;
             background: #fff;
-            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
         }
 
         .text-center { text-align: center; }
 
-        /* Footer Bar */
+        /* 5. REDESIGNED FIXED FOOTER BAR */
         .footer-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: var(--footer-height);
+            z-index: 1000;
             background: #0f172a;
             color: #94a3b8;
-            padding: 16px 40px;
-            font-size: 12px;
-            border-top: 1px solid #1e293b;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 -4px 15px rgba(0,0,0,0.15);
+            display: flex;
+            align-items: center;
         }
 
         .footer-content {
-            max-width: 1240px;
+            max-width: 1280px;
+            width: 100%;
             margin: 0 auto;
+            padding: 0 24px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap;
+            font-size: 12px;
+        }
+
+        .footer-left {
+            display: flex;
+            align-items: center;
             gap: 12px;
+        }
+
+        .footer-mini-logo {
+            width: 22px;
+            height: 22px;
+            object-fit: contain;
+        }
+
+        .footer-divider {
+            color: #475569;
+        }
+
+        .footer-center {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 4px 14px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .footer-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .footer-tag {
+            background: rgba(255, 255, 255, 0.08);
+            color: #cbd5e1;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
         .spinner {
@@ -521,72 +876,131 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
 <body>
     <div id="app">
 
-        <!-- Banner Header -->
+        <!-- 1. FIXED HEADER BANNER -->
         <header class="header-banner">
             <div class="header-container">
                 <div class="header-title-box">
-                    <h1>
-                        <i class="fa-solid fa-calendar-check"></i>
-                        Hệ Thống Lập Lịch Báo Dạy & Gộp Giáo Án Tự Động
-                    </h1>
-                    <p>Bóc tách Thời khóa biểu + Giáo án các môn → Tự động ghép Lịch báo dạy & Nối file Giáo án hoàn chỉnh</p>
+                    <div class="header-logo-wrapper">
+                        <img src="/logo.png" alt="Logo" class="app-header-logo" onerror="this.src='/favicon.ico'">
+                    </div>
+                    <div>
+                        <h1>
+                            Hệ Thống Lập Lịch Báo Dạy
+                        </h1>
+                    </div>
                 </div>
-                <div class="version-badge">
-                    <i class="fa-solid fa-shield-halved"></i> Version 2.0.0
+
+                <div class="header-right-badges">
+                    <div class="header-status-badge">
+                        <span class="status-dot"></span>
+                        <span>Server Online</span>
+                    </div>
+                    <div class="version-badge">
+                        <i class="fa-solid fa-shield-halved"></i> Version 3.0.0
+                    </div>
                 </div>
             </div>
         </header>
 
-        <!-- Main Workspace -->
+        <!-- TOAST CONTAINERS FOR NOTIFICATIONS -->
+        <div class="toast-container">
+            <div 
+                v-for="t in toasts" 
+                :key="t.id" 
+                class="toast-item" 
+                :class="'toast-' + t.type"
+            >
+                <div class="toast-icon">
+                    <i v-if="t.type === 'success'" class="fa-solid fa-circle-check"></i>
+                    <i v-else-if="t.type === 'error'" class="fa-solid fa-circle-xmark"></i>
+                    <i v-else-if="t.type === 'warning'" class="fa-solid fa-triangle-exclamation"></i>
+                    <i v-else class="fa-solid fa-circle-info"></i>
+                </div>
+                <div class="toast-content">
+                    <div class="toast-title">{{ t.title }}</div>
+                    <div class="toast-message">{{ t.message }}</div>
+                </div>
+                <button class="toast-close" @click="removeToast(t.id)">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+                <div class="toast-progress"></div>
+            </div>
+        </div>
+
+        <!-- 2. MAIN WORKSPACE CONTAINER -->
         <main class="app-container">
+
+            <!-- THANH TIẾN TRÌNH (PROGRESS BAR CARD) -->
+            <section v-if="progress.active" class="progress-card">
+                <div class="progress-header">
+                    <div class="progress-title-box">
+                        <span class="spinner" style="border-top-color: #60a5fa; width: 18px; height: 18px;"></span>
+                        <span>{{ progress.title }}</span>
+                    </div>
+                    <div class="progress-percent-badge">{{ progress.percent }}%</div>
+                </div>
+                <div class="progress-track">
+                    <div class="progress-fill" :style="{ width: progress.percent + '%' }"></div>
+                </div>
+                <div class="progress-detail">
+                    <span><i class="fa-solid fa-circle-notch fa-spin"></i> {{ progress.detail }}</span>
+                    <span>Vui lòng không tắt ứng dụng</span>
+                </div>
+            </section>
 
             <!-- BƯỚC 1: CẤU HÌNH & THỜI KHÓA BIỂU -->
             <section class="card">
                 <div class="card-header">
                     <div class="card-title">
                         <span class="step-pill">1</span>
-                        <i class="fa-solid fa-sliders"></i>
+                        <i class="fa-solid fa-sliders" style="color: #2563eb;"></i>
                         <span>Cấu Hình Thông Tin Chăm Học & Nạp Thời Khóa Biểu</span>
                     </div>
                 </div>
 
                 <div class="info-grid">
                     <div class="form-group">
-                        <label class="form-label">Tên Giáo Viên CN</label>
-                        <input type="text" v-model="gvName" class="form-input">
+                        <label class="form-label"><i class="fa-solid fa-user-tie"></i> Tên Giáo Viên CN</label>
+                        <input type="text" v-model="gvName" class="form-input" placeholder="VD: Lâm Huệ Trí">
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Tên Lớp Học</label>
-                        <input type="text" v-model="lopName" class="form-input">
+                        <label class="form-label"><i class="fa-solid fa-chalkboard-user"></i> Tên Lớp Học</label>
+                        <input type="text" v-model="lopName" class="form-input" placeholder="VD: 5/5">
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Năm Học</label>
-                        <input type="text" v-model="namHoc" class="form-input">
+                        <label class="form-label"><i class="fa-solid fa-graduation-cap"></i> Năm Học</label>
+                        <input type="text" v-model="namHoc" class="form-input" placeholder="VD: 2026 - 2027">
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Ngày Thứ 2 Tuần 1</label>
+                        <label class="form-label"><i class="fa-regular fa-calendar-days"></i> Ngày Thứ 2 Tuần 1</label>
                         <input type="date" v-model="startMonday" class="form-input">
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Chọn Tuần Học</label>
+                        <label class="form-label"><i class="fa-solid fa-list-ol"></i> Chọn Tuần Học</label>
                         <select v-model.number="selectedTuan" class="form-select">
                             <option v-for="w in 35" :key="w" :value="w">Tuần {{ w }}</option>
                         </select>
                     </div>
                 </div>
 
-                <div class="dropzone-box">
+                <div class="dropzone-box" :class="{ 'has-file': fileTkb }">
                     <input type="file" ref="fileTkbInput" @change="onFileTkbSelect" accept=".docx, .xlsx">
                     <div class="dropzone-icon">
-                        <i class="fa-solid fa-file-contract"></i>
+                        <i v-if="fileTkb" class="fa-solid fa-file-circle-check" style="color: #10b981;"></i>
+                        <i v-else class="fa-solid fa-cloud-arrow-up"></i>
                     </div>
-                    <div class="dropzone-label">Tệp Thời Khóa Biểu Giảng Dạy (.docx)</div>
-                    <div style="font-size: 12px; color: #64748b; margin-top: 4px;">Kéo thả hoặc click chọn file TKB đã làm sạch của giáo viên</div>
+                    <div class="dropzone-label">Tệp Thời Khóa Biểu Giảng Dạy (.docx hoặc .xlsx)</div>
+                    <div style="font-size: 13px; color: #64748b; margin-top: 4px;">Kéo thả hoặc click chọn file TKB đã làm sạch của giáo viên</div>
                     <div v-if="fileTkb" class="file-selected-badge">
                         <i class="fa-solid fa-circle-check"></i> {{ fileTkb.name }}
                     </div>
@@ -598,37 +1012,39 @@
                 <div class="card-header">
                     <div class="card-title">
                         <span class="step-pill">2</span>
-                        <i class="fa-solid fa-boxes-stacked"></i>
+                        <i class="fa-solid fa-boxes-stacked" style="color: #2563eb;"></i>
                         <span>Quản Lý Nạp Giáo Án Từng Môn Học (Tự động gợi ý từ TKB)</span>
                     </div>
 
-                    <button class="btn-action" style="padding: 8px 16px; font-size: 13px;" @click="addSubjectBox">
-                        <i class="fa-solid fa-plus"></i> Thêm Box Môn Học
-                    </button>
+                    <div style="display: flex; gap: 10px;">
+                        <button class="btn-action" style="padding: 8px 16px; font-size: 13px;" @click="addSubjectBox('')">
+                            <i class="fa-solid fa-plus"></i> Thêm Box Môn Học
+                        </button>
+                    </div>
                 </div>
 
                 <div class="subject-boxes-grid">
-                    <div v-for="(box, idx) in subjectBoxes" :key="idx" class="subject-box-card">
+                    <div v-for="(box, idx) in subjectBoxes" :key="idx" class="subject-box-card" :class="{ 'has-file': box.file }">
                         <div class="box-header">
-                            <input type="text" v-model="box.subjectName" class="form-input box-subject-input" placeholder="Tên môn (VD: Toán)">
+                            <input type="text" v-model="box.subjectName" class="form-input box-subject-input" placeholder="Tên môn (VD: TOÁN)">
                             <button class="btn-delete-box" @click="removeSubjectBox(idx)" title="Xóa Box này">
                                 <i class="fa-solid fa-trash-can"></i>
                             </button>
                         </div>
 
-                        <div class="file-input-wrapper">
+                        <div class="file-input-wrapper" :class="{ active: box.file }">
                             <input type="file" @change="onSubjectFileSelect($event, box)" accept=".docx">
                             <span v-if="box.file">
                                 <i class="fa-solid fa-file-word" style="color: #2563eb;"></i> <strong>{{ box.file.name }}</strong>
                             </span>
                             <span v-else>
-                                <i class="fa-solid fa-cloud-arrow-up"></i> Chọn file Giáo án {{ box.subjectName || 'môn' }} (.docx)
+                                <i class="fa-solid fa-cloud-arrow-up"></i> Chọn file Giáo án môn {{ box.subjectName || 'học' }} (.docx)
                             </span>
                         </div>
                     </div>
 
-                    <button class="btn-add-box" @click="addSubjectBox">
-                        <i class="fa-solid fa-circle-plus" style="font-size: 24px;"></i>
+                    <button class="btn-add-box" @click="addSubjectBox('')">
+                        <i class="fa-solid fa-circle-plus" style="font-size: 26px;"></i>
                         <span>Thêm Box Môn Học Mới</span>
                     </button>
                 </div>
@@ -647,7 +1063,7 @@
                 <div class="card-header">
                     <div class="card-title">
                         <span class="step-pill">3</span>
-                        <i class="fa-solid fa-file-word"></i>
+                        <i class="fa-solid fa-file-word" style="color: #2563eb;"></i>
                         <span>Xem Trước Lịch Báo Dạy & Xuất File Word Gộp (Hoàn Chỉnh)</span>
                     </div>
 
@@ -655,7 +1071,7 @@
                         <button class="btn-action btn-green" @click="exportMultiDocx" :disabled="exporting">
                             <span v-if="exporting" class="spinner"></span>
                             <i v-else class="fa-solid fa-download"></i>
-                            <span>{{ exporting ? 'Đang Tạo File Gộp 22MB...' : 'Xuất File Word Gộp (Bìa + Lịch + Giáo Án)' }}</span>
+                            <span>{{ exporting ? 'Đang Tạo File Gộp...' : 'Xuất File Word Gộp (Bìa + Lịch + Giáo Án)' }}</span>
                         </button>
                     </div>
                 </div>
@@ -669,7 +1085,7 @@
                         :class="{ active: activeWeek === w }"
                         @click="activeWeek = w"
                     >
-                        <i class="fa-regular fa-calendar"></i> Tuần {{ w }} ({{ multiSchedule[w].length }} tiết)
+                        <i class="fa-regular fa-calendar-check"></i> Tuần {{ w }} ({{ multiSchedule[w].length }} tiết)
                     </div>
                 </div>
 
@@ -678,13 +1094,13 @@
                     <table class="data-table">
                         <thead>
                             <tr>
-                                <th style="width: 70px;">Thứ</th>
-                                <th style="width: 75px;">Buổi</th>
-                                <th style="width: 70px;">Tiết TKB</th>
-                                <th style="width: 140px;">Môn Học</th>
-                                <th style="width: 80px;">Tiết PPCT</th>
+                                <th style="width: 75px;">Thứ</th>
+                                <th style="width: 80px;">Buổi</th>
+                                <th style="width: 75px;">Tiết TKB</th>
+                                <th style="width: 150px;">Môn Học</th>
+                                <th style="width: 90px;">Tiết PPCT</th>
                                 <th>Tên Bài Dạy / Nội Dung Dạy Học</th>
-                                <th style="width: 140px;">Ghi Chú / Điều Chỉnh</th>
+                                <th style="width: 150px;">Ghi Chú / Điều Chỉnh</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -692,7 +1108,7 @@
                                 <td class="text-center"><strong>{{ row.thu }}</strong></td>
                                 <td class="text-center">{{ row.buoi }}</td>
                                 <td class="text-center">{{ row.tiet_tkb }}</td>
-                                <td><strong>{{ row.mon }}</strong></td>
+                                <td><strong style="color: #1e3a8a;">{{ row.mon }}</strong></td>
                                 <td class="text-center">
                                     <input type="text" v-model="row.tiet_ppct" class="text-center">
                                 </td>
@@ -710,14 +1126,27 @@
 
         </main>
 
-        <!-- Footer Bar -->
+        <!-- 3. REDESIGNED FIXED FOOTER BAR -->
         <footer class="footer-bar">
             <div class="footer-content">
-                <div>
-                    <span><i class="fa-regular fa-copyright"></i> 2026 <strong>Phát triển bởi Lâm Huệ Trung</strong></span>
+                <div class="footer-left">
+                    <img src="/logo.png" alt="Logo" class="footer-mini-logo" onerror="this.style.display='none'">
+                    <span><strong>Auto Lịch Báo Dạy</strong> v3.0</span>
+                    <span class="footer-divider">•</span>
+                    <span>&copy; 2026 <strong>Lâm Huệ Trung</strong></span>
                 </div>
-                <div>
-                    <span><i class="fa-solid fa-server"></i> Status: <strong style="color: #10b981;">Online</strong></span>
+
+                <div class="footer-center">
+                    <span class="status-dot"></span>
+                    <span>Hệ thống: <strong style="color: #34d399;">Sẵn sàng làm việc</strong></span>
+                </div>
+
+                <div class="footer-right">
+                    <span class="footer-tag"><i class="fa-solid fa-layer-group"></i> {{ subjectBoxes.length }} môn học</span>
+                    <span class="footer-tag"><i class="fa-regular fa-calendar"></i> Tuần {{ selectedTuan }}</span>
+                    <span class="footer-tag" style="background: rgba(37, 99, 235, 0.2); color: #93c5fd;">
+                        <i class="fa-solid fa-desktop"></i> Desktop App
+                    </span>
                 </div>
             </div>
         </footer>
@@ -725,13 +1154,29 @@
     </div>
 
     <script>
-        function handleFileSave(blob, defaultFilename) {
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = defaultFilename;
-            document.body.appendChild(link);
-            link.click();
-            setTimeout(() => document.body.removeChild(link), 200);
+        function handleFileSave(blob, defaultFilename, vueApp) {
+            if (window.pywebview && window.pywebview.api && window.pywebview.api.save_file_dialog) {
+                const reader = new FileReader();
+                reader.onloadend = function () {
+                    const base64data = reader.result.split(',')[1];
+                    window.pywebview.api.save_file_dialog(defaultFilename, base64data).then(res => {
+                        if (res && res.success) {
+                            if (vueApp) vueApp.toastSuccess('Đã lưu file thành công tại:\n' + res.path, 'Lưu File Thành Công');
+                        } else if (res && res.error) {
+                            if (vueApp) vueApp.toastError('Lỗi khi lưu file: ' + res.error, 'Lưu File Thất Bại');
+                        }
+                    });
+                };
+                reader.readAsDataURL(blob);
+            } else {
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = defaultFilename;
+                document.body.appendChild(link);
+                link.click();
+                setTimeout(() => document.body.removeChild(link), 200);
+                if (vueApp) vueApp.toastSuccess(`Đã tải xuống file: ${defaultFilename}`, 'Tải File Hoàn Tất');
+            }
         }
 
         new Vue({
@@ -748,7 +1193,15 @@
                 exporting: false,
                 multiSchedule: {},
                 activeWeek: 1,
-                apiUrl: window.location.origin
+                apiUrl: window.location.origin,
+                toasts: [],
+                progress: {
+                    active: false,
+                    percent: 0,
+                    title: '',
+                    detail: '',
+                    stage: ''
+                }
             },
             computed: {
                 sortedWeeks() {
@@ -759,22 +1212,82 @@
                 }
             },
             methods: {
+                // Toast notifications system
+                showToast(message, type = 'info', title = '', duration = 4000) {
+                    const id = Date.now() + Math.random();
+                    const defaultTitles = {
+                        success: 'Thành công',
+                        error: 'Thông báo lỗi',
+                        warning: 'Cảnh báo',
+                        info: 'Thông tin'
+                    };
+                    const toast = {
+                        id,
+                        message,
+                        type,
+                        title: title || defaultTitles[type] || 'Thông báo',
+                        duration
+                    };
+                    this.toasts.push(toast);
+                    setTimeout(() => {
+                        this.removeToast(id);
+                    }, duration);
+                },
+                removeToast(id) {
+                    this.toasts = this.toasts.filter(t => t.id !== id);
+                },
+                toastSuccess(msg, title = '') { this.showToast(msg, 'success', title); },
+                toastError(msg, title = '') { this.showToast(msg, 'error', title); },
+                toastWarning(msg, title = '') { this.showToast(msg, 'warning', title); },
+                toastInfo(msg, title = '') { this.showToast(msg, 'info', title); },
+
+                // Progress Bar tracking helpers
+                startProgress(title, detail = '') {
+                    this.progress = {
+                        active: true,
+                        percent: 10,
+                        title: title || 'Đang xử lý...',
+                        detail: detail || 'Vui lòng chờ trong giây lát...',
+                        stage: 'init'
+                    };
+                },
+                updateProgress(percent, title = null, detail = null) {
+                    if (!this.progress.active) return;
+                    this.progress.percent = Math.min(100, Math.max(0, percent));
+                    if (title) this.progress.title = title;
+                    if (detail) this.progress.detail = detail;
+                },
+                finishProgress(successMsg = null) {
+                    this.progress.percent = 100;
+                    this.progress.detail = 'Hoàn tất!';
+                    setTimeout(() => {
+                        this.progress.active = false;
+                        if (successMsg) {
+                            this.toastSuccess(successMsg);
+                        }
+                    }, 500);
+                },
+                cancelProgress() {
+                    this.progress.active = false;
+                },
+
                 async onFileTkbSelect(event) {
                     const file = event.target.files[0];
                     if (!file) return;
                     this.fileTkb = file;
+                    this.toastInfo(`Đã nạp tệp TKB: ${file.name}`, 'Nạp TKB');
 
                     // Automatically call API to extract unique subjects from TKB
                     const formData = new FormData();
                     formData.append('file_tkb', file);
                     try {
                         const res = await axios.post(`${this.apiUrl}/api/parse-tkb`, formData);
-                        if (res.data && res.data.unique_subjects) {
-                            // Populate boxes with detected subjects
+                        if (res.data && res.data.unique_subjects && res.data.unique_subjects.length > 0) {
                             this.subjectBoxes = res.data.unique_subjects.map(subj => ({
                                 subjectName: subj,
                                 file: null
                             }));
+                            this.toastSuccess(`Tự động nhận diện ${res.data.unique_subjects.length} môn học từ TKB!`, 'Phân Tích TKB');
                         }
                     } catch (err) {
                         console.log('Parse TKB subject warning:', err);
@@ -785,18 +1298,27 @@
                     }
                 },
                 addSubjectBox(defaultName = '') {
+                    const name = typeof defaultName === 'string' ? defaultName : '';
                     this.subjectBoxes.push({
-                        subjectName: typeof defaultName === 'string' ? defaultName : '',
+                        subjectName: name,
                         file: null
                     });
+                    if (name) {
+                        this.toastInfo(`Đã thêm môn: ${name}`, 'Thêm Môn');
+                    }
                 },
                 removeSubjectBox(index) {
+                    const removed = this.subjectBoxes[index];
                     this.subjectBoxes.splice(index, 1);
+                    if (removed && removed.subjectName) {
+                        this.toastInfo(`Đã xóa môn ${removed.subjectName}`, 'Xóa Môn');
+                    }
                 },
                 onSubjectFileSelect(event, box) {
                     const f = event.target.files[0];
                     if (f) {
                         box.file = f;
+                        this.toastSuccess(`Đã chọn Giáo án cho môn ${box.subjectName || 'học'}: ${f.name}`, 'Tải File Giáo Án');
                     }
                 },
                 formatDateStr(dStr) {
@@ -808,8 +1330,12 @@
                     return dStr;
                 },
                 async generatePreview() {
-                    if (!this.fileTkb) return;
+                    if (!this.fileTkb) {
+                        this.toastWarning('Vui lòng chọn tệp Thời Khóa Biểu (.docx hoặc .xlsx) trước!', 'Chưa chọn TKB');
+                        return;
+                    }
                     this.loading = true;
+                    this.startProgress('Đang bóc tách & Ghép Lịch báo dạy', 'Đang tải tệp TKB & Giáo án lên máy chủ...');
 
                     const formData = new FormData();
                     formData.append('start_tuan', this.selectedTuan);
@@ -820,7 +1346,6 @@
                     formData.append('start_monday', this.formatDateStr(this.startMonday));
                     formData.append('file_tkb', this.fileTkb);
 
-                    // Append dynamic subject lesson plan files
                     this.subjectBoxes.forEach(box => {
                         if (box.subjectName && box.file) {
                             formData.append(`file_giaoan_${box.subjectName.trim ? box.subjectName.trim() : box.subjectName}`, box.file);
@@ -829,27 +1354,45 @@
 
                     try {
                         const res = await axios.post(`${this.apiUrl}/api/generate-preview`, formData, {
-                            headers: { 'Content-Type': 'multipart/form-data' }
+                            headers: { 'Content-Type': 'multipart/form-data' },
+                            onUploadProgress: (progressEvent) => {
+                                if (progressEvent.total) {
+                                    const percent = Math.round((progressEvent.loaded * 60) / progressEvent.total);
+                                    this.updateProgress(percent, 'Đang tải dữ liệu lên...', `Đã gửi ${percent}% dữ liệu`);
+                                }
+                            }
                         });
-                        this.multiSchedule = res.data;
-                        if (this.sortedWeeks.length > 0) {
-                            this.activeWeek = this.sortedWeeks[0];
-                        }
+
+                        this.updateProgress(85, 'Đang đối soát & Tổng hợp Lịch...', 'Phân tích các tiết học và bài dạy...');
+
+                        setTimeout(() => {
+                            this.multiSchedule = res.data;
+                            if (this.sortedWeeks.length > 0) {
+                                this.activeWeek = this.sortedWeeks[0];
+                            }
+                            this.finishProgress('Đã ghép và tạo bảng xem trước Lịch Báo Dạy thành công!');
+                        }, 300);
+
                     } catch (err) {
+                        this.cancelProgress();
                         let errorMsg = 'Không thể kết nối Backend hoặc server bị lỗi.';
                         if (err.response && err.response.data && err.response.data.detail) {
                             errorMsg = err.response.data.detail;
                         } else if (err.message) {
                             errorMsg = err.message;
                         }
-                        alert('⚠️ Lỗi: ' + errorMsg);
+                        this.toastError(errorMsg, 'Lỗi Xử Lý');
                     } finally {
                         this.loading = false;
                     }
                 },
                 async exportMultiDocx() {
-                    if (!this.fileTkb) return;
+                    if (!this.fileTkb) {
+                        this.toastWarning('Vui lòng chọn tệp Thời Khóa Biểu!', 'Chưa có TKB');
+                        return;
+                    }
                     this.exporting = true;
+                    this.startProgress('Đang khởi tạo & Xuất file Word Gộp', 'Đang tải dữ liệu và đọc mẫu trang bìa...');
 
                     const formData = new FormData();
                     formData.append('start_tuan', this.selectedTuan);
@@ -862,18 +1405,32 @@
 
                     this.subjectBoxes.forEach(box => {
                         if (box.subjectName && box.file) {
-                            formData.append(`file_giaoan_${box.subjectName}`, box.file);
+                            formData.append(`file_giaoan_${box.subjectName.trim ? box.subjectName.trim() : box.subjectName}`, box.file);
                         }
                     });
 
                     try {
                         const res = await axios.post(`${this.apiUrl}/api/export-multi-docx`, formData, {
-                            responseType: 'blob'
+                            responseType: 'blob',
+                            onUploadProgress: (progressEvent) => {
+                                if (progressEvent.total) {
+                                    const percent = Math.round((progressEvent.loaded * 50) / progressEvent.total);
+                                    this.updateProgress(percent, 'Đang tải tệp lên server...', `Đã gửi ${percent}%`);
+                                }
+                            }
                         });
+
+                        this.updateProgress(85, 'Đang ghép file Word & Nối các bài dạy...', 'Vui lòng chờ trong giây lát...');
+
                         const blob = new Blob([res.data], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
-                        handleFileSave(blob, `Lich_Bao_Day_Gop_Tuan_${this.selectedTuan}.docx`);
+                        const defaultFilename = `Lich_Bao_Day_Gop_Tuan_${this.selectedTuan}.docx`;
+                        
+                        handleFileSave(blob, defaultFilename, this);
+
+                        this.finishProgress('Đã xuất file Word Gộp (Bìa + Lịch + Giáo Án) thành công!');
                     } catch (err) {
-                        alert('⚠️ Lỗi xuất file Word: ' + err.message);
+                        this.cancelProgress();
+                        this.toastError('Lỗi xuất file Word: ' + (err.message || err), 'Xuất File Thất Bại');
                     } finally {
                         this.exporting = false;
                     }
