@@ -1,20 +1,43 @@
 import os
+import sys
+import io
+
+# Cấu hình UTF-8 cho stdout/stderr trên Windows để tránh lỗi UnicodeEncodeError khi print()
+if hasattr(sys.stdout, "reconfigure"):
+    try:
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
+if hasattr(sys.stderr, "reconfigure"):
+    try:
+        sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
+
+# Ensure backend directory is in sys.path
+backend_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+if backend_dir not in sys.path:
+    sys.path.insert(0, backend_dir)
+
 from typing import List, Dict, Optional
-from fastapi import FastAPI, UploadFile, File, Form, HTTPException
+from fastapi import FastAPI, UploadFile, File, Form, HTTPException, Request
 from fastapi.responses import StreamingResponse, JSONResponse, FileResponse
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
 
-from app.core.schemas import TKBSlot, BaiHoc, ScheduleRow
-from app.core.engine import generate_multi_week_schedule
-from app.parsers.tkb_parser import auto_parse_tkb
-from app.parsers.ppct_parser import auto_parse_ppct
-from app.exporters.docx_export import export_to_docx, export_multi_week_to_docx, export_weeks_to_zip
+from app.core.schemas import TKBSlot, ScheduleRow, ParseTkbResponse, LessonBlock
+from app.core.engine import generate_multi_week_schedule, normalize_subject_name
+from app.parsers.tkb_parser import auto_parse_tkb, extract_unique_subjects
+from app.parsers.giaoan_parser import parse_giaoan_docx
+from app.exporters.docx_export import (
+    export_combined_week_docx,
+    export_multi_week_combined_docx,
+    fill_template_docx,
+)
 
 app = FastAPI(
     title="Auto Lịch Báo Dạy Engine API",
-    description="API tự động đọc TKB + PPCT/Giáo án và xuất file Word Lịch báo dạy chuẩn định dạng",
-    version="1.1.0"
+    description="API tự động đọc TKB + Phân tích Giáo án từng môn và xuất file Word Gộp (Bìa + Lịch + Giáo án chi tiết)",
+    version="3.0.0"
 )
 
 app.add_middleware(
@@ -32,96 +55,157 @@ def read_root():
     index_path = os.path.join(frontend_dir, "index.html")
     if os.path.exists(index_path):
         return FileResponse(index_path)
-    return {
-        "status": "online",
-        "service": "Auto Lịch Báo Dạy Engine",
-        "docs_url": "/docs"
-    }
+    return {"status": "online", "service": "Auto Lịch Báo Dạy Engine v3.0", "docs_url": "/docs"}
 
-class ExportDocxRequest(BaseModel):
-    tuan: int = 1
-    schedule: List[ScheduleRow]
+@app.get("/logo.png")
+def get_logo():
+    logo_path = os.path.join(frontend_dir, "logo.png")
+    if os.path.exists(logo_path):
+        return FileResponse(logo_path, media_type="image/png")
+    orig_logo = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "DOCS", "Logo.png"))
+    return FileResponse(orig_logo, media_type="image/png")
 
-class ExportMultiWeekRequest(BaseModel):
-    multi_schedule: Dict[int, List[ScheduleRow]]
+@app.get("/favicon.ico")
+def get_favicon():
+    fav_path = os.path.join(frontend_dir, "favicon.ico")
+    if os.path.exists(fav_path):
+        return FileResponse(fav_path, media_type="image/x-icon")
+    return get_logo()
 
-@app.post("/api/generate-preview")
-async def generate_preview(
-    start_tuan: int = Form(1),
-    end_tuan: int = Form(1),
-    file_tkb: UploadFile = File(..., description="File Thời khóa biểu (.xlsx hoặc .docx)"),
-    file_ppct: UploadFile = File(..., description="File Phân phối chương trình (.docx, .xlsx, hoặc .pdf)")
-):
+
+
+@app.post("/api/parse-tkb", response_model=ParseTkbResponse)
+async def parse_tkb_endpoint(file_tkb: UploadFile = File(...)):
     """
-    Nhận 2 file TKB và PPCT, tự động ghép lịch cho 1 hoặc nhiều tuần (từ start_tuan đến end_tuan).
+    Đọc file TKB → trả danh sách tiết + danh sách môn học độc bản (unique_subjects).
     """
     try:
         tkb_bytes = await file_tkb.read()
-        tkb_slots = auto_parse_tkb(tkb_bytes, file_tkb.filename)
+        slots = auto_parse_tkb(tkb_bytes, file_tkb.filename)
+        if not slots:
+            raise HTTPException(status_code=400, detail="Không tìm thấy tiết học nào từ file TKB.")
+        unique_subjects = extract_unique_subjects(slots)
+        return ParseTkbResponse(unique_subjects=unique_subjects, slots=slots)
+    except HTTPException:
+        raise
     except Exception as e:
-        raise HTTPException(status_code=400, detail=f"Lỗi khi đọc file TKB '{file_tkb.filename}': {str(e)}")
+        raise HTTPException(status_code=400, detail=f"Lỗi khi đọc file TKB: {str(e)}")
 
-    if not tkb_slots:
-        raise HTTPException(status_code=400, detail=f"Không bóc tách được tiết học nào từ file TKB '{file_tkb.filename}'. Vui lòng kiểm tra lại cấu trúc bảng TKB.")
 
-    try:
-        ppct_bytes = await file_ppct.read()
-        ppct_items = auto_parse_ppct(ppct_bytes, file_ppct.filename)
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=f"Lỗi khi đọc file PPCT '{file_ppct.filename}': {str(e)}")
+@app.post("/api/generate-preview")
+async def generate_preview(request: Request):
+    """
+    Preview Bảng Lịch Báo Dạy (JSON) để hiển thị trước khi xuất file.
+    Form Data:
+      - file_tkb: File TKB
+      - tuan / start_tuan: số tuần (1 tuần duy nhất)
+      - gv_name, lop, nam_hoc, start_monday
+      - file_giaoan_<tên_môn>: các file giáo án
+    """
+    form = await request.form()
 
-    if not ppct_items:
-        raise HTTPException(status_code=400, detail=f"Không tìm thấy bài học nào trong file PPCT '{file_ppct.filename}'. Vui lòng kiểm tra lại cấu trúc bảng bài học.")
+    file_tkb = form.get("file_tkb")
+    if not file_tkb or not hasattr(file_tkb, "read"):
+        raise HTTPException(status_code=400, detail="Thiếu file_tkb!")
 
-    try:
-        multi_schedule = generate_multi_week_schedule(tkb_slots, ppct_items, start_tuan=start_tuan, end_tuan=end_tuan)
-        return multi_schedule
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Lỗi trong quá trình ghép lịch: {str(e)}")
+    tuan_raw = form.get("tuan", form.get("start_tuan", 1))
+    tuan = int(tuan_raw)
+
+    tkb_bytes = await file_tkb.read()
+    slots = auto_parse_tkb(tkb_bytes, getattr(file_tkb, "filename", "TKB.docx"))
+    if not slots:
+        raise HTTPException(status_code=400, detail="Không trích xuất được dữ liệu từ TKB.")
+
+    lesson_blocks: List[LessonBlock] = await _parse_all_giaoan(form)
+
+    if not lesson_blocks:
+        raise HTTPException(status_code=400, detail="Vui lòng nạp ít nhất 1 file Giáo án.")
+
+    multi_data = generate_multi_week_schedule(slots, lesson_blocks, start_tuan=tuan, end_tuan=tuan)
+    schedule, _ = multi_data.get(tuan, ([], []))
+
+    # Trả về dict { tuan: [rows] } cho frontend Vue hiển thị theo multiSchedule[activeWeek]
+    return {tuan: [row.dict() for row in schedule]}
+
 
 @app.post("/api/export-docx")
-async def export_docx_endpoint(req: ExportDocxRequest):
+async def export_docx_endpoint(request: Request):
     """
-    Xuất 1 tuần thành file Word.
+    Xuất File Word Gộp cho 1 tuần:
+    Bìa + Bảng LBD + Header & Nội dung Giáo án chi tiết theo thứ tự TKB.
     """
-    try:
-        docx_stream = export_to_docx(req.schedule, tuan=req.tuan)
-        return StreamingResponse(
-            docx_stream,
-            media_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-            headers={"Content-Disposition": f"attachment; filename=Lich_Bao_Day_Tuan_{req.tuan}.docx"}
-        )
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Lỗi xuất file Word: {str(e)}")
+    form = await request.form()
 
+    tuan_raw = form.get("tuan", form.get("start_tuan", 1))
+    tuan = int(tuan_raw)
+    gv_name = form.get("gv_name", "Lâm Huệ Trí")
+    lop = form.get("lop", "5/5")
+    nam_hoc = form.get("nam_hoc", "2026 - 2027")
+    start_monday = form.get("start_monday", "07/09/2026")
+
+    file_tkb = form.get("file_tkb")
+    if not file_tkb or not hasattr(file_tkb, "read"):
+        raise HTTPException(status_code=400, detail="Thiếu file_tkb!")
+
+    tkb_bytes = await file_tkb.read()
+    slots = auto_parse_tkb(tkb_bytes, getattr(file_tkb, "filename", "TKB.docx"))
+    if not slots:
+        raise HTTPException(status_code=400, detail="Không trích xuất được dữ liệu từ TKB.")
+
+    lesson_blocks: List[LessonBlock] = await _parse_all_giaoan(form)
+
+    multi_data = generate_multi_week_schedule(slots, lesson_blocks, start_tuan=tuan, end_tuan=tuan)
+    schedule, ordered_blocks = multi_data.get(tuan, ([], []))
+
+    docx_stream = export_combined_week_docx(
+        schedule=schedule,
+        ordered_blocks=ordered_blocks,
+        tuan=tuan,
+        gv_name=gv_name,
+        lop=lop,
+        nam_hoc=nam_hoc,
+        start_monday=start_monday,
+    )
+
+    filename = f"Lich_Bao_Day_Gop_Tuan_{tuan}.docx"
+    return StreamingResponse(
+        docx_stream,
+        media_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        headers={"Content-Disposition": f"attachment; filename={filename}"}
+    )
+
+
+# Giữ backward-compat endpoint cũ trỏ vào endpoint mới
 @app.post("/api/export-multi-docx")
-async def export_multi_docx_endpoint(req: ExportMultiWeekRequest):
+async def export_multi_docx_endpoint(request: Request):
     """
-    Xuất nhiều tuần vào 1 file Word duy nhất.
+    Backward-compatible: xuất file giống /api/export-docx.
+    Đọc tuan từ start_tuan (cũ) hoặc tuan (mới).
     """
-    try:
-        docx_stream = export_multi_week_to_docx(req.multi_schedule)
-        weeks_str = f"Tuan_{min(req.multi_schedule.keys())}_den_{max(req.multi_schedule.keys())}"
-        return StreamingResponse(
-            docx_stream,
-            media_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-            headers={"Content-Disposition": f"attachment; filename=Lich_Bao_Day_{weeks_str}.docx"}
-        )
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Lỗi xuất file Word: {str(e)}")
+    return await export_docx_endpoint(request)
 
-@app.post("/api/export-zip")
-async def export_zip_endpoint(req: ExportMultiWeekRequest):
+
+# ─────────────────────────────────────────
+# HELPER
+# ─────────────────────────────────────────
+async def _parse_all_giaoan(form) -> List[LessonBlock]:
     """
-    Xuất nhiều tuần thành nén ZIP chứa từng file Word riêng lẻ.
+    Đọc tất cả các file giáo án từ form (key bắt đầu bằng 'file_giaoan_').
+    Trả về List[LessonBlock] tổng hợp tất cả môn.
     """
-    try:
-        zip_stream = export_weeks_to_zip(req.multi_schedule)
-        weeks_str = f"Tuan_{min(req.multi_schedule.keys())}_den_{max(req.multi_schedule.keys())}"
-        return StreamingResponse(
-            zip_stream,
-            media_type="application/zip",
-            headers={"Content-Disposition": f"attachment; filename=Lich_Bao_Day_{weeks_str}.zip"}
-        )
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Lỗi xuất file ZIP: {str(e)}")
+    all_blocks: List[LessonBlock] = []
+    # Dùng form.items() hỗ trợ Starlette FormData
+    for key, val in form.items():
+        if key.startswith("file_giaoan_") and hasattr(val, "read"):
+            subj_name = key.replace("file_giaoan_", "").strip()
+            try:
+                g_bytes = await val.read()
+                if not g_bytes:
+                    continue
+                blocks = parse_giaoan_docx(g_bytes, subj_name)
+                all_blocks.extend(blocks)
+                print(f"[parse_giaoan] Mon '{subj_name}' -> {len(blocks)} block(s) tim thay")
+            except Exception as ex:
+                print(f"[parse_giaoan] Loi parse '{subj_name}': {ex}")
+    return all_blocks
+
