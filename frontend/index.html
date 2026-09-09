@@ -4,15 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Auto Lịch Báo Dạy - Desktop Application</title>
-<<<<<<< HEAD
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <link rel="shortcut icon" type="image/png" href="/logo.png">
     <!-- Google Fonts Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-=======
-    <!-- Google Fonts Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
->>>>>>> bbe273c0b4829ef92cb6e00e1b3f26809e413907
     <!-- FontAwesome 6 CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Vue 2 CDN -->
@@ -24,25 +19,16 @@
             --primary: #2563eb;
             --primary-hover: #1d4ed8;
             --primary-light: #eff6ff;
-<<<<<<< HEAD
             --bg-color: #f8fafc;
-=======
-            --bg-color: #f1f5f9;
->>>>>>> bbe273c0b4829ef92cb6e00e1b3f26809e413907
             --card-bg: #ffffff;
             --text-main: #0f172a;
             --text-sub: #64748b;
             --border-color: #cbd5e1;
             --accent-green: #10b981;
             --accent-green-hover: #059669;
-<<<<<<< HEAD
             --accent-red: #ef4444;
             --accent-red-hover: #dc2626;
             --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
-=======
-            --accent-amber: #f59e0b;
-            --accent-amber-hover: #d97706;
->>>>>>> bbe273c0b4829ef92cb6e00e1b3f26809e413907
             --shadow-md: 0 4px 12px -2px rgba(15, 23, 42, 0.08);
             --shadow-lg: 0 10px 25px -5px rgba(15, 23, 42, 0.1);
         }
@@ -51,11 +37,7 @@
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-<<<<<<< HEAD
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
-=======
-            font-family: 'Inter', system-ui, sans-serif;
->>>>>>> bbe273c0b4829ef92cb6e00e1b3f26809e413907
         }
 
         body {
@@ -67,56 +49,11 @@
             min-height: 100vh;
         }
 
-<<<<<<< HEAD
         /* Header Banner */
         .header-banner {
             background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
             color: white;
             padding: 22px 32px;
-=======
-        /* Desktop Application Window Bar */
-        .window-bar {
-            background: #0f172a;
-            color: #94a3b8;
-            height: 38px;
-            padding: 0 16px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            font-size: 12px;
-            font-weight: 500;
-            user-select: none;
-        }
-
-        .window-title {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            color: #f8fafc;
-        }
-
-        .window-controls {
-            display: flex;
-            gap: 8px;
-        }
-
-        .win-btn {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            display: inline-block;
-        }
-
-        .win-close { background: #ef4444; }
-        .win-min { background: #f59e0b; }
-        .win-max { background: #10b981; }
-
-        /* Main Header Banner */
-        .header-banner {
-            background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
-            color: white;
-            padding: 28px 40px;
->>>>>>> bbe273c0b4829ef92cb6e00e1b3f26809e413907
             box-shadow: var(--shadow-md);
         }
 
@@ -128,7 +65,6 @@
             align-items: center;
         }
 
-<<<<<<< HEAD
         .header-title-box {
             display: flex;
             align-items: center;
@@ -163,36 +99,23 @@
         .header-title-box h1 {
             font-size: 22px;
             font-weight: 800;
-=======
-        .header-title-box h1 {
-            font-size: 24px;
-            font-weight: 700;
->>>>>>> bbe273c0b4829ef92cb6e00e1b3f26809e413907
             display: flex;
             align-items: center;
             gap: 12px;
             letter-spacing: -0.5px;
         }
 
-<<<<<<< HEAD
 
         .header-title-box p {
             font-size: 13px;
             color: #93c5fd;
             margin-top: 4px;
-=======
-        .header-title-box p {
-            font-size: 13px;
-            color: #93c5fd;
-            margin-top: 6px;
->>>>>>> bbe273c0b4829ef92cb6e00e1b3f26809e413907
             font-weight: 400;
         }
 
         .version-badge {
             background: rgba(255, 255, 255, 0.15);
             backdrop-filter: blur(4px);
-<<<<<<< HEAD
             padding: 5px 12px;
             border-radius: 20px;
             font-size: 12px;
@@ -207,42 +130,18 @@
         .app-container {
             max-width: 1240px;
             margin: 24px auto;
-=======
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 600;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        /* App Container */
-        .app-container {
-            max-width: 1240px;
-            margin: 28px auto;
->>>>>>> bbe273c0b4829ef92cb6e00e1b3f26809e413907
             padding: 0 20px;
             flex: 1;
             width: 100%;
         }
 
-<<<<<<< HEAD
         .card {
             background: var(--card-bg);
             border-radius: 16px;
-=======
-        /* Desktop Card Container */
-        .card {
-            background: var(--card-bg);
-            border-radius: 14px;
->>>>>>> bbe273c0b4829ef92cb6e00e1b3f26809e413907
             border: 1px solid #e2e8f0;
             box-shadow: var(--shadow-md);
             padding: 24px 28px;
             margin-bottom: 24px;
-<<<<<<< HEAD
-=======
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
->>>>>>> bbe273c0b4829ef92cb6e00e1b3f26809e413907
         }
 
         .card-header {
@@ -263,30 +162,16 @@
             gap: 10px;
         }
 
-<<<<<<< HEAD
         .step-pill {
             background: var(--primary-light);
             color: var(--primary);
             width: 28px;
             height: 28px;
-=======
-        .card-title i {
-            color: var(--primary);
-            font-size: 18px;
-        }
-
-        .step-pill {
-            background: var(--primary-light);
-            color: var(--primary);
-            width: 26px;
-            height: 26px;
->>>>>>> bbe273c0b4829ef92cb6e00e1b3f26809e413907
             border-radius: 50%;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             font-size: 13px;
-<<<<<<< HEAD
             font-weight: 800;
         }
 
@@ -338,22 +223,6 @@
             border: 2px dashed #cbd5e1;
             border-radius: 12px;
             padding: 24px 20px;
-=======
-            font-weight: 700;
-        }
-
-        /* Dropzone Upload Grid */
-        .dropzone-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-
-        .dropzone-box {
-            border: 2px dashed #cbd5e1;
-            border-radius: 12px;
-            padding: 26px 20px;
->>>>>>> bbe273c0b4829ef92cb6e00e1b3f26809e413907
             text-align: center;
             background: #f8fafc;
             cursor: pointer;
@@ -376,7 +245,6 @@
             cursor: pointer;
         }
 
-<<<<<<< HEAD
         .dropzone-icon {
             font-size: 32px;
             color: var(--primary);
@@ -385,37 +253,10 @@
 
         .dropzone-label {
             font-weight: 700;
-=======
-        .dropzone-icon-box {
-            width: 48px;
-            height: 48px;
-            background: white;
-            border-radius: 12px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 12px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
-            color: var(--primary);
-            font-size: 22px;
-        }
-
-        .dropzone-label {
-            font-weight: 600;
->>>>>>> bbe273c0b4829ef92cb6e00e1b3f26809e413907
             font-size: 14px;
             color: var(--text-main);
         }
 
-<<<<<<< HEAD
-=======
-        .dropzone-sub {
-            font-size: 12px;
-            color: var(--text-sub);
-            margin-top: 4px;
-        }
-
->>>>>>> bbe273c0b4829ef92cb6e00e1b3f26809e413907
         .file-selected-badge {
             margin-top: 10px;
             display: inline-flex;
@@ -423,7 +264,6 @@
             gap: 6px;
             background: #dcfce7;
             color: #15803d;
-<<<<<<< HEAD
             padding: 5px 14px;
             border-radius: 20px;
             font-size: 12px;
@@ -532,81 +372,6 @@
 
         .btn-add-box:hover {
             background: var(--primary-light);
-=======
-            padding: 4px 12px;
-            border-radius: 6px;
-            font-size: 12px;
-            font-weight: 600;
-            word-break: break-all;
-        }
-
-        /* Mode Selection Pills */
-        .mode-selection-group {
-            display: flex;
-            gap: 12px;
-            margin-top: 12px;
-        }
-
-        .mode-button {
-            padding: 10px 18px;
-            border-radius: 8px;
-            background: #f1f5f9;
-            font-weight: 600;
-            font-size: 13px;
-            color: #475569;
-            cursor: pointer;
-            border: 1px solid var(--border-color);
-            transition: all 0.2s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .mode-button:hover {
-            background: #e2e8f0;
-        }
-
-        .mode-button.active {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);
-        }
-
-        /* Control Panel Form */
-        .control-row {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            margin-top: 20px;
-            background: #f8fafc;
-            padding: 16px 20px;
-            border-radius: 10px;
-            border: 1px solid #e2e8f0;
-            flex-wrap: wrap;
-        }
-
-        .input-label {
-            font-weight: 600;
-            font-size: 13px;
-            color: #334155;
-        }
-
-        .form-select, .form-input {
-            padding: 9px 12px;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            font-size: 13px;
-            outline: none;
-            background: white;
-            font-weight: 500;
-            color: var(--text-main);
-        }
-
-        .form-select:focus, .form-input:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
->>>>>>> bbe273c0b4829ef92cb6e00e1b3f26809e413907
         }
 
         /* Action Buttons */
@@ -614,26 +379,16 @@
             background: var(--primary);
             color: white;
             border: none;
-<<<<<<< HEAD
             padding: 12px 24px;
             border-radius: 10px;
             font-weight: 700;
-=======
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-weight: 600;
->>>>>>> bbe273c0b4829ef92cb6e00e1b3f26809e413907
             font-size: 14px;
             cursor: pointer;
             transition: all 0.2s ease;
             display: inline-flex;
             align-items: center;
             gap: 8px;
-<<<<<<< HEAD
             box-shadow: 0 4px 10px rgba(37, 99, 235, 0.25);
-=======
-            box-shadow: 0 2px 6px rgba(37, 99, 235, 0.2);
->>>>>>> bbe273c0b4829ef92cb6e00e1b3f26809e413907
         }
 
         .btn-action:hover {
@@ -642,29 +397,13 @@
 
         .btn-green {
             background: var(--accent-green);
-<<<<<<< HEAD
             box-shadow: 0 4px 10px rgba(16, 185, 129, 0.25);
-=======
-            box-shadow: 0 2px 6px rgba(16, 185, 129, 0.2);
->>>>>>> bbe273c0b4829ef92cb6e00e1b3f26809e413907
         }
 
         .btn-green:hover {
             background: var(--accent-green-hover);
         }
 
-<<<<<<< HEAD
-=======
-        .btn-amber {
-            background: var(--accent-amber);
-            box-shadow: 0 2px 6px rgba(245, 158, 11, 0.2);
-        }
-
-        .btn-amber:hover {
-            background: var(--accent-amber-hover);
-        }
-
->>>>>>> bbe273c0b4829ef92cb6e00e1b3f26809e413907
         .btn-action:disabled {
             background: #94a3b8;
             box-shadow: none;
@@ -681,19 +420,11 @@
         }
 
         .week-nav-item {
-<<<<<<< HEAD
             padding: 7px 16px;
             border-radius: 20px;
             background: #f1f5f9;
             font-size: 12px;
             font-weight: 700;
-=======
-            padding: 6px 14px;
-            border-radius: 20px;
-            background: #f1f5f9;
-            font-size: 12px;
-            font-weight: 600;
->>>>>>> bbe273c0b4829ef92cb6e00e1b3f26809e413907
             color: #475569;
             cursor: pointer;
             white-space: nowrap;
@@ -714,11 +445,7 @@
         /* Data Table Styling */
         .table-wrapper {
             overflow-x: auto;
-<<<<<<< HEAD
             border-radius: 12px;
-=======
-            border-radius: 10px;
->>>>>>> bbe273c0b4829ef92cb6e00e1b3f26809e413907
             border: 1px solid #e2e8f0;
         }
 
@@ -733,11 +460,7 @@
             background: #f1f5f9;
             font-weight: 700;
             color: #334155;
-<<<<<<< HEAD
             padding: 12px 14px;
-=======
-            padding: 11px 12px;
->>>>>>> bbe273c0b4829ef92cb6e00e1b3f26809e413907
             border-bottom: 1px solid var(--border-color);
             border-right: 1px solid #e2e8f0;
             text-align: center;
@@ -785,32 +508,6 @@
             gap: 12px;
         }
 
-<<<<<<< HEAD
-=======
-        .footer-left {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .footer-right {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .footer-link {
-            color: #cbd5e1;
-            text-decoration: none;
-            transition: color 0.2s ease;
-        }
-
-        .footer-link:hover {
-            color: white;
-        }
-
-        /* Loading Spinner */
->>>>>>> bbe273c0b4829ef92cb6e00e1b3f26809e413907
         .spinner {
             border: 2px solid rgba(255, 255, 255, 0.3);
             border-radius: 50%;
@@ -827,32 +524,13 @@
     </style>
 </head>
 <body>
-<<<<<<< HEAD
     <div id="app">
 
         <!-- Banner Header -->
-=======
-    <div id="app" style="display: flex; flex-direction: column; min-height: 100vh;">
-        <!-- Desktop App Window Titlebar -->
-        <div class="window-bar">
-            <div class="window-title">
-                <i class="fa-solid fa-calendar-check" style="color: #38bdf8;"></i>
-                <span>Auto Lịch Báo Dạy - Desktop Engine</span>
-            </div>
-            <div class="window-controls">
-                <span class="win-btn win-min"></span>
-                <span class="win-btn win-max"></span>
-                <span class="win-btn win-close"></span>
-            </div>
-        </div>
-
-        <!-- Main Banner Header -->
->>>>>>> bbe273c0b4829ef92cb6e00e1b3f26809e413907
         <header class="header-banner">
             <div class="header-container">
                 <div class="header-title-box">
                     <h1>
-<<<<<<< HEAD
                         <i class="fa-solid fa-calendar-check"></i>
                         Hệ Thống Lập Lịch Báo Dạy & Gộp Giáo Án Tự Động
                     </h1>
@@ -860,32 +538,18 @@
                 </div>
                 <div class="version-badge">
                     <i class="fa-solid fa-shield-halved"></i> Version 2.0.0
-=======
-                        <i class="fa-solid fa-calendar-days"></i>
-                        Hệ Thống Tự Động Tạo Lịch Báo Dạy
-                    </h1>
-                    <p>Bóc tách TKB + Phân phối chương trình → Tự động ghép bài dạy & xuất file Word chuẩn định dạng</p>
-                </div>
-                <div class="version-badge">
-                    <i class="fa-solid fa-code-branch"></i> Version 1.1.0
->>>>>>> bbe273c0b4829ef92cb6e00e1b3f26809e413907
                 </div>
             </div>
         </header>
 
         <!-- Main Workspace -->
         <main class="app-container">
-<<<<<<< HEAD
 
             <!-- BƯỚC 1: CẤU HÌNH & THỜI KHÓA BIỂU -->
-=======
-            <!-- Bước 1: Nạp Tệp Dữ Liệu -->
->>>>>>> bbe273c0b4829ef92cb6e00e1b3f26809e413907
             <section class="card">
                 <div class="card-header">
                     <div class="card-title">
                         <span class="step-pill">1</span>
-<<<<<<< HEAD
                         <i class="fa-solid fa-sliders"></i>
                         <span>Cấu Hình Thông Tin Chăm Học & Nạp Thời Khóa Biểu</span>
                     </div>
@@ -974,93 +638,10 @@
                         <span v-if="loading" class="spinner"></span>
                         <i v-else class="fa-solid fa-bolt"></i>
                         <span>{{ loading ? 'Đang Ghép Lịch...' : 'Xử Lý & Xem Trước Lịch Báo Dạy' }}</span>
-=======
-                        <i class="fa-solid fa-folder-open"></i>
-                        <span>Nạp Tệp Dữ Liệu Thời Khóa Biểu & Giáo Án</span>
-                    </div>
-                </div>
-
-                <div class="dropzone-grid">
-                    <!-- Dropzone TKB -->
-                    <div class="dropzone-box">
-                        <input type="file" ref="fileTkbInput" @change="onFileTkbSelect" accept=".xlsx, .xls, .docx">
-                        <div class="dropzone-icon-box">
-                            <i class="fa-solid fa-file-excel"></i>
-                        </div>
-                        <div class="dropzone-label">Tệp 1: Thời Khóa Biểu Giảng Dạy</div>
-                        <div class="dropzone-sub">Kéo thả hoặc click chọn file TKB (.xlsx, .docx)</div>
-                        <div v-if="fileTkb" class="file-selected-badge">
-                            <i class="fa-solid fa-circle-check"></i> {{ fileTkb.name }}
-                        </div>
-                    </div>
-
-                    <!-- Dropzone PPCT -->
-                    <div class="dropzone-box">
-                        <input type="file" ref="filePpctInput" @change="onFilePpctSelect" accept=".docx, .xlsx, .xls, .pdf">
-                        <div class="dropzone-icon-box">
-                            <i class="fa-solid fa-file-word"></i>
-                        </div>
-                        <div class="dropzone-label">Tệp 2: Kế Hoạch Dạy Học / PPCT</div>
-                        <div class="dropzone-sub">Kéo thả hoặc click chọn file PPCT (.docx, .xlsx, .pdf)</div>
-                        <div v-if="filePpct" class="file-selected-badge">
-                            <i class="fa-solid fa-circle-check"></i> {{ filePpct.name }}
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Thiết Lập Thời Gian -->
-                <div style="margin-top: 24px;">
-                    <div class="input-label" style="margin-bottom: 8px;">
-                        <i class="fa-solid fa-clock-rotate-left"></i> Phạm Vi Thời Gian Xuất Lịch:
-                    </div>
-                    <div class="mode-selection-group">
-                        <div class="mode-button" :class="{ active: mode === 'range' }" @click="setMode('range')">
-                            <i class="fa-solid fa-list-check"></i> Theo Khoảng Tuần
-                        </div>
-                        <div class="mode-button" :class="{ active: mode === 'month' }" @click="setMode('month')">
-                            <i class="fa-regular fa-calendar-days"></i> Theo Tháng Học
-                        </div>
-                        <div class="mode-button" :class="{ active: mode === 'year' }" @click="setMode('year')">
-                            <i class="fa-solid fa-graduation-cap"></i> Trọn Bộ Cả Năm (35 Tuần)
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Form Controls -->
-                <div class="control-row">
-                    <template v-if="mode === 'range'">
-                        <span class="input-label">Từ Tuần:</span>
-                        <input type="number" v-model.number="startTuan" class="form-input" style="width: 80px;" min="1" max="35">
-                        <span class="input-label">Đến Tuần:</span>
-                        <input type="number" v-model.number="endTuan" class="form-input" style="width: 80px;" min="1" max="35">
-                    </template>
-
-                    <template v-if="mode === 'month'">
-                        <span class="input-label">Chọn Tháng:</span>
-                        <select v-model="selectedMonth" @change="onMonthChange" class="form-select">
-                            <option v-for="m in monthOptions" :key="m.value" :value="m.value">{{ m.label }}</option>
-                        </select>
-                        <span style="font-size: 13px; color: #64748b; font-weight: 500;">
-                            <i class="fa-solid fa-arrow-right-long"></i> Tuần {{ startTuan }} đến Tuần {{ endTuan }}
-                        </span>
-                    </template>
-
-                    <template v-if="mode === 'year'">
-                        <span style="font-size: 13px; font-weight: 600; color: #2563eb;">
-                            <i class="fa-solid fa-circle-info"></i> Hệ thống sẽ tự động ghép trọn bộ 35 Tuần học trong năm
-                        </span>
-                    </template>
-
-                    <button class="btn-action" @click="generatePreview" :disabled="!fileTkb || !filePpct || loading" style="margin-left: auto;">
-                        <span v-if="loading" class="spinner"></span>
-                        <i v-else class="fa-solid fa-bolt"></i>
-                        <span>{{ loading ? 'Đang Xử Lý Dữ Liệu...' : 'Xử Lý & Xem Trước' }}</span>
->>>>>>> bbe273c0b4829ef92cb6e00e1b3f26809e413907
                     </button>
                 </div>
             </section>
 
-<<<<<<< HEAD
             <!-- BƯỚC 3: BẢNG XEM TRƯỚC & XUẤT FILE GỘP -->
             <section v-if="Object.keys(multiSchedule).length > 0" class="card">
                 <div class="card-header">
@@ -1075,32 +656,11 @@
                             <span v-if="exporting" class="spinner"></span>
                             <i v-else class="fa-solid fa-download"></i>
                             <span>{{ exporting ? 'Đang Tạo File Gộp 22MB...' : 'Xuất File Word Gộp (Bìa + Lịch + Giáo Án)' }}</span>
-=======
-            <!-- Bước 2: Bảng Xem Trước & Báo Cáo -->
-            <section v-if="Object.keys(multiSchedule).length > 0" class="card">
-                <div class="card-header">
-                    <div class="card-title">
-                        <span class="step-pill">2</span>
-                        <i class="fa-solid fa-table-list"></i>
-                        <span>Bảng Xem Trước Lịch Báo Dạy (Đã Khớp {{ sortedWeeks.length }} Tuần)</span>
-                    </div>
-
-                    <div style="display: flex; gap: 10px;">
-                        <button class="btn-action btn-green" @click="exportMultiDocx">
-                            <i class="fa-solid fa-file-word"></i> Xuất File Word Gộp (.docx)
-                        </button>
-                        <button class="btn-action btn-amber" @click="exportZip">
-                            <i class="fa-solid fa-file-zipper"></i> Tải File ZIP (35 File Tách)
->>>>>>> bbe273c0b4829ef92cb6e00e1b3f26809e413907
                         </button>
                     </div>
                 </div>
 
-<<<<<<< HEAD
                 <!-- Navigation Chọn Tuần Preview -->
-=======
-                <!-- Navigation chọn Tuần hiển thị preview -->
->>>>>>> bbe273c0b4829ef92cb6e00e1b3f26809e413907
                 <div class="week-nav-bar">
                     <div 
                         v-for="w in sortedWeeks" 
@@ -1113,16 +673,11 @@
                     </div>
                 </div>
 
-<<<<<<< HEAD
                 <!-- Bảng Preview Chi Tiết -->
-=======
-                <!-- Bảng Dữ Liệu Chi Tiết -->
->>>>>>> bbe273c0b4829ef92cb6e00e1b3f26809e413907
                 <div v-if="activeWeekSchedule" class="table-wrapper">
                     <table class="data-table">
                         <thead>
                             <tr>
-<<<<<<< HEAD
                                 <th style="width: 70px;">Thứ</th>
                                 <th style="width: 75px;">Buổi</th>
                                 <th style="width: 70px;">Tiết TKB</th>
@@ -1130,16 +685,6 @@
                                 <th style="width: 80px;">Tiết PPCT</th>
                                 <th>Tên Bài Dạy / Nội Dung Dạy Học</th>
                                 <th style="width: 140px;">Ghi Chú / Điều Chỉnh</th>
-=======
-                                <th style="width: 75px;">Thứ</th>
-                                <th style="width: 75px;">Buổi</th>
-                                <th style="width: 75px;">Tiết TKB</th>
-                                <th style="width: 150px;">Môn Học</th>
-                                <th style="width: 85px;">Tiết PPCT</th>
-                                <th>Tên Bài Dạy / Nội Dung Bài Học</th>
-                                <th style="width: 180px;">Thiết Bị Dạy Học</th>
-                                <th style="width: 140px;">Ghi Chú</th>
->>>>>>> bbe273c0b4829ef92cb6e00e1b3f26809e413907
                             </tr>
                         </thead>
                         <tbody>
@@ -1155,12 +700,6 @@
                                     <input type="text" v-model="row.ten_bai">
                                 </td>
                                 <td>
-<<<<<<< HEAD
-=======
-                                    <input type="text" v-model="row.thiet_bi">
-                                </td>
-                                <td>
->>>>>>> bbe273c0b4829ef92cb6e00e1b3f26809e413907
                                     <input type="text" v-model="row.ghi_chu">
                                 </td>
                             </tr>
@@ -1168,7 +707,6 @@
                     </table>
                 </div>
             </section>
-<<<<<<< HEAD
 
         </main>
 
@@ -1211,49 +749,6 @@
                 multiSchedule: {},
                 activeWeek: 1,
                 apiUrl: window.location.origin
-=======
-        </main>
-
-        <!-- Desktop Application Footer Bar -->
-        <footer class="footer-bar">
-            <div class="footer-content">
-                <div class="footer-left">
-                    <span><i class="fa-regular fa-copyright"></i> 2026 <strong>Phát triển bởi Lâm Huệ Trung</strong></span>
-                </div>
-                <div class="footer-right">
-                    <span><i class="fa-solid fa-server"></i> Status: <strong style="color: #10b981;">Online</strong></span>
-                    <span><i class="fa-solid fa-shield-halved"></i> Auto Lịch Báo Dạy v1.1.0</span>
-                </div>
-            </div>
-        </footer>
-    </div>
-
-    <script>
-        new Vue({
-            el: '#app',
-            data: {
-                fileTkb: null,
-                filePpct: null,
-                mode: 'range',
-                startTuan: 1,
-                endTuan: 1,
-                selectedMonth: 9,
-                loading: false,
-                multiSchedule: {},
-                activeWeek: 1,
-                apiUrl: window.location.origin,
-                monthOptions: [
-                    { label: 'Tháng 9 (Tuần 1 - 4)', value: 9, start: 1, end: 4 },
-                    { label: 'Tháng 10 (Tuần 5 - 8)', value: 10, start: 5, end: 8 },
-                    { label: 'Tháng 11 (Tuần 9 - 12)', value: 11, start: 9, end: 12 },
-                    { label: 'Tháng 12 (Tuần 13 - 16)', value: 12, start: 13, end: 16 },
-                    { label: 'Tháng 1 (Tuần 17 - 20)', value: 1, start: 17, end: 20 },
-                    { label: 'Tháng 2 (Tuần 21 - 24)', value: 2, start: 21, end: 24 },
-                    { label: 'Tháng 3 (Tuần 25 - 28)', value: 3, start: 25, end: 28 },
-                    { label: 'Tháng 4 (Tuần 29 - 32)', value: 4, start: 29, end: 32 },
-                    { label: 'Tháng 5 (Tuần 33 - 35)', value: 5, start: 33, end: 35 },
-                ]
->>>>>>> bbe273c0b4829ef92cb6e00e1b3f26809e413907
             },
             computed: {
                 sortedWeeks() {
@@ -1264,7 +759,6 @@
                 }
             },
             methods: {
-<<<<<<< HEAD
                 async onFileTkbSelect(event) {
                     const file = event.target.files[0];
                     if (!file) return;
@@ -1332,39 +826,6 @@
                             formData.append(`file_giaoan_${box.subjectName.trim ? box.subjectName.trim() : box.subjectName}`, box.file);
                         }
                     });
-=======
-                setMode(m) {
-                    this.mode = m;
-                    if (m === 'year') {
-                        this.startTuan = 1;
-                        this.endTuan = 35;
-                    } else if (m === 'month') {
-                        this.onMonthChange();
-                    }
-                },
-                onMonthChange() {
-                    const opt = this.monthOptions.find(o => o.value === this.selectedMonth);
-                    if (opt) {
-                        this.startTuan = opt.start;
-                        this.endTuan = opt.end;
-                    }
-                },
-                onFileTkbSelect(event) {
-                    this.fileTkb = event.target.files[0] || null;
-                },
-                onFilePpctSelect(event) {
-                    this.filePpct = event.target.files[0] || null;
-                },
-                async generatePreview() {
-                    if (!this.fileTkb || !this.filePpct) return;
-                    this.loading = true;
-                    
-                    const formData = new FormData();
-                    formData.append('start_tuan', this.startTuan);
-                    formData.append('end_tuan', this.endTuan);
-                    formData.append('file_tkb', this.fileTkb);
-                    formData.append('file_ppct', this.filePpct);
->>>>>>> bbe273c0b4829ef92cb6e00e1b3f26809e413907
 
                     try {
                         const res = await axios.post(`${this.apiUrl}/api/generate-preview`, formData, {
@@ -1375,11 +836,7 @@
                             this.activeWeek = this.sortedWeeks[0];
                         }
                     } catch (err) {
-<<<<<<< HEAD
                         let errorMsg = 'Không thể kết nối Backend hoặc server bị lỗi.';
-=======
-                        let errorMsg = 'Không thể kết nối đến Backend hoặc server bị lỗi.';
->>>>>>> bbe273c0b4829ef92cb6e00e1b3f26809e413907
                         if (err.response && err.response.data && err.response.data.detail) {
                             errorMsg = err.response.data.detail;
                         } else if (err.message) {
@@ -1391,7 +848,6 @@
                     }
                 },
                 async exportMultiDocx() {
-<<<<<<< HEAD
                     if (!this.fileTkb) return;
                     this.exporting = true;
 
@@ -1430,39 +886,6 @@
                 this.addSubjectBox('KHOA HỌC');
                 this.addSubjectBox('CÔNG NGHỆ');
                 this.addSubjectBox('HĐTN');
-=======
-                    if (Object.keys(this.multiSchedule).length === 0) return;
-                    try {
-                        const payload = { multi_schedule: this.multiSchedule };
-                        const res = await axios.post(`${this.apiUrl}/api/export-multi-docx`, payload, {
-                            responseType: 'blob'
-                        });
-                        const blob = new Blob([res.data], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
-                        const link = document.createElement('a');
-                        link.href = window.URL.createObjectURL(blob);
-                        link.download = `Lich_Bao_Day_Tuan_${this.startTuan}_den_${this.endTuan}.docx`;
-                        link.click();
-                    } catch (err) {
-                        alert('Lỗi khi xuất file Word: ' + err.message);
-                    }
-                },
-                async exportZip() {
-                    if (Object.keys(this.multiSchedule).length === 0) return;
-                    try {
-                        const payload = { multi_schedule: this.multiSchedule };
-                        const res = await axios.post(`${this.apiUrl}/api/export-zip`, payload, {
-                            responseType: 'blob'
-                        });
-                        const blob = new Blob([res.data], { type: 'application/zip' });
-                        const link = document.createElement('a');
-                        link.href = window.URL.createObjectURL(blob);
-                        link.download = `Lich_Bao_Day_Tuan_${this.startTuan}_den_${this.endTuan}.zip`;
-                        link.click();
-                    } catch (err) {
-                        alert('Lỗi khi xuất file ZIP: ' + err.message);
-                    }
-                }
->>>>>>> bbe273c0b4829ef92cb6e00e1b3f26809e413907
             }
         });
     </script>
