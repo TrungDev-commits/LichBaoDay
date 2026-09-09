@@ -1,5 +1,6 @@
 import io
 import os
+import sys
 import copy
 import datetime
 from typing import List, Dict, Optional
@@ -10,9 +11,34 @@ from docxcompose.composer import Composer
 
 from app.core.schemas import ScheduleRow, LessonBlock
 
-TEMPLATE_PATH = os.path.abspath(
-    os.path.join(os.path.dirname(__file__), "..", "templates", "template_final.docx")
-)
+
+def get_template_path() -> str:
+    """Xác định đường dẫn file mẫu template_final.docx (tự tương thích PyInstaller frozen & local dev)."""
+    possible_paths = []
+    if getattr(sys, 'frozen', False):
+        base_dir = getattr(sys, '_MEIPASS', '')
+        if base_dir:
+            possible_paths.extend([
+                os.path.join(base_dir, "backend", "app", "templates", "template_final.docx"),
+                os.path.join(base_dir, "app", "templates", "mau_lich.docx"),
+                os.path.join(base_dir, "app", "templates", "template_final.docx"),
+            ])
+    
+    curr_dir = os.path.dirname(os.path.abspath(__file__))
+    possible_paths.extend([
+        os.path.abspath(os.path.join(curr_dir, "..", "templates", "template_final.docx")),
+        os.path.abspath(os.path.join(curr_dir, "..", "..", "app", "templates", "mau_lich.docx")),
+        os.path.abspath(os.path.join(curr_dir, "..", "..", "..", "app", "templates", "mau_lich.docx")),
+    ])
+    
+    for p in possible_paths:
+        if p and os.path.exists(p):
+            return p
+            
+    return os.path.abspath(os.path.join(curr_dir, "..", "templates", "template_final.docx"))
+
+
+TEMPLATE_PATH = get_template_path()
 
 # ─────────────────────────────────────────
 # HELPERS
@@ -223,8 +249,11 @@ def fill_template_docx(
     """
     Điền thông tin Bìa, Header và Bảng Lịch Báo Dạy vào file mẫu template_final.docx.
     """
+    if not template_path or not os.path.exists(template_path):
+        template_path = get_template_path()
+
     if not os.path.exists(template_path):
-        template_path = TEMPLATE_PATH
+        raise FileNotFoundError(f"Không tìm thấy file mẫu Word template tại: {template_path}")
 
     doc = Document(template_path)
     d_start = _parse_start_monday(start_monday)
@@ -303,14 +332,18 @@ def _replace_para_text(para, new_text: str):
 
 
 def _replace_cell_text(cell, new_text: str):
-    """Thay text của cell đầu tiên."""
+    """Thay text của cell an toàn."""
+    text_str = str(new_text or "")
+    if not cell.paragraphs:
+        cell.add_paragraph(text_str)
+        return
     for para in cell.paragraphs:
         for run in para.runs:
             run.text = ""
-    if cell.paragraphs and cell.paragraphs[0].runs:
-        cell.paragraphs[0].runs[0].text = new_text
-    elif cell.paragraphs:
-        cell.paragraphs[0].text = new_text
+    if cell.paragraphs[0].runs:
+        cell.paragraphs[0].runs[0].text = text_str
+    else:
+        cell.paragraphs[0].text = text_str
 
 
 def _find_lbd_table(doc: Document):
@@ -339,7 +372,9 @@ def _fill_lbd_table(table, schedule: List[ScheduleRow], lop: str, tuan_str: str)
     # Build lookup: (thu_norm, buoi_upper, tiet_str) → ScheduleRow
     slot_map: Dict = {}
     for r in schedule:
-        key = (r.thu.strip(), r.buoi.strip().capitalize(), str(r.tiet_tkb))
+        thu_str = (r.thu or "").strip()
+        buoi_str = (r.buoi or "").strip().capitalize()
+        key = (thu_str, buoi_str, str(r.tiet_tkb or ""))
         slot_map[key] = r
 
     for r_idx in range(1, len(table.rows)):
@@ -355,10 +390,10 @@ def _fill_lbd_table(table, schedule: List[ScheduleRow], lop: str, tuan_str: str)
         key = (c_thu, c_buoi, c_tiet)
         if key in slot_map:
             data = slot_map[key]
-            _replace_cell_text(cells[3], data.mon)
+            _replace_cell_text(cells[3], data.mon or "")
             _replace_cell_text(cells[4], data.lop or lop)
-            _replace_cell_text(cells[5], str(data.tiet_ppct))
-            _replace_cell_text(cells[6], data.ten_bai)
+            _replace_cell_text(cells[5], str(data.tiet_ppct or ""))
+            _replace_cell_text(cells[6], data.ten_bai or "")
             if len(cells) > 7:
                 _replace_cell_text(cells[7], data.ghi_chu or "")
 

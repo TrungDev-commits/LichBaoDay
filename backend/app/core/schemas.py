@@ -33,8 +33,8 @@ class ScheduleRow(BaseModel):
     tiet_tkb: int
     mon: str
     lop: str = "5/5"
-    tiet_ppct: str
-    ten_bai: str
+    tiet_ppct: Any = ""
+    ten_bai: str = ""
     thiet_bi: str = ""
     ghi_chu: str = ""
 

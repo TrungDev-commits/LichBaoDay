@@ -964,13 +964,13 @@
                     <div class="card-title">
                         <span class="step-pill">1</span>
                         <i class="fa-solid fa-sliders" style="color: #2563eb;"></i>
-                        <span>Cấu Hình Thông Tin Chăm Học & Nạp Thời Khóa Biểu</span>
+                        <span>Cấu Hình Thông Tin</span>
                     </div>
                 </div>
 
                 <div class="info-grid">
                     <div class="form-group">
-                        <label class="form-label"><i class="fa-solid fa-user-tie"></i> Tên Giáo Viên CN</label>
+                        <label class="form-label"><i class="fa-solid fa-user-tie"></i> Tên Giáo Viên</label>
                         <input type="text" v-model="gvName" class="form-input" placeholder="VD: Lâm Huệ Trí">
                     </div>
                     <div class="form-group">
@@ -982,7 +982,7 @@
                         <input type="text" v-model="namHoc" class="form-input" placeholder="VD: 2026 - 2027">
                     </div>
                     <div class="form-group">
-                        <label class="form-label"><i class="fa-regular fa-calendar-days"></i> Ngày Thứ 2 Tuần 1</label>
+                        <label class="form-label"><i class="fa-regular fa-calendar-days"></i> Ngày Bắt Đầu (Thứ 2)</label>
                         <input type="date" v-model="startMonday" class="form-input">
                     </div>
                     <div class="form-group">
@@ -999,7 +999,7 @@
                         <i v-if="fileTkb" class="fa-solid fa-file-circle-check" style="color: #10b981;"></i>
                         <i v-else class="fa-solid fa-cloud-arrow-up"></i>
                     </div>
-                    <div class="dropzone-label">Tệp Thời Khóa Biểu Giảng Dạy (.docx hoặc .xlsx)</div>
+                    <div class="dropzone-label">Thời Khóa Biểu Giảng Dạy (.docx hoặc .xlsx)</div>
                     <div style="font-size: 13px; color: #64748b; margin-top: 4px;">Kéo thả hoặc click chọn file TKB đã làm sạch của giáo viên</div>
                     <div v-if="fileTkb" class="file-selected-badge">
                         <i class="fa-solid fa-circle-check"></i> {{ fileTkb.name }}
@@ -1013,12 +1013,12 @@
                     <div class="card-title">
                         <span class="step-pill">2</span>
                         <i class="fa-solid fa-boxes-stacked" style="color: #2563eb;"></i>
-                        <span>Quản Lý Nạp Giáo Án Từng Môn Học (Tự động gợi ý từ TKB)</span>
+                        <span>Giáo Án Từng Môn Học</span>
                     </div>
 
                     <div style="display: flex; gap: 10px;">
                         <button class="btn-action" style="padding: 8px 16px; font-size: 13px;" @click="addSubjectBox('')">
-                            <i class="fa-solid fa-plus"></i> Thêm Box Môn Học
+                            <i class="fa-solid fa-plus"></i> Thêm Môn Học
                         </button>
                     </div>
                 </div>
@@ -1038,14 +1038,14 @@
                                 <i class="fa-solid fa-file-word" style="color: #2563eb;"></i> <strong>{{ box.file.name }}</strong>
                             </span>
                             <span v-else>
-                                <i class="fa-solid fa-cloud-arrow-up"></i> Chọn file Giáo án môn {{ box.subjectName || 'học' }} (.docx)
+                                <i class="fa-solid fa-cloud-arrow-up"></i> Nhập giáo án môn {{ box.subjectName || 'học' }} (.docx)
                             </span>
                         </div>
                     </div>
 
                     <button class="btn-add-box" @click="addSubjectBox('')">
                         <i class="fa-solid fa-circle-plus" style="font-size: 26px;"></i>
-                        <span>Thêm Box Môn Học Mới</span>
+                        <span>Môn Học Mới</span>
                     </button>
                 </div>
 
@@ -1053,7 +1053,7 @@
                     <button class="btn-action" @click="generatePreview" :disabled="!fileTkb || loading">
                         <span v-if="loading" class="spinner"></span>
                         <i v-else class="fa-solid fa-bolt"></i>
-                        <span>{{ loading ? 'Đang Ghép Lịch...' : 'Xử Lý & Xem Trước Lịch Báo Dạy' }}</span>
+                        <span>{{ loading ? 'Đang tạo...' : 'Tạo Lịch Báo Dạy' }}</span>
                     </button>
                 </div>
             </section>
@@ -1063,15 +1063,15 @@
                 <div class="card-header">
                     <div class="card-title">
                         <span class="step-pill">3</span>
-                        <i class="fa-solid fa-file-word" style="color: #2563eb;"></i>
-                        <span>Xem Trước Lịch Báo Dạy & Xuất File Word Gộp (Hoàn Chỉnh)</span>
+                        <span>Xem Trước Lịch Báo Dạy</span>
                     </div>
 
                     <div style="display: flex; gap: 10px;">
                         <button class="btn-action btn-green" @click="exportMultiDocx" :disabled="exporting">
                             <span v-if="exporting" class="spinner"></span>
                             <i v-else class="fa-solid fa-download"></i>
-                            <span>{{ exporting ? 'Đang Tạo File Gộp...' : 'Xuất File Word Gộp (Bìa + Lịch + Giáo Án)' }}</span>
+                            <span>{{ exporting ? 'Đang Tạo File...' : 'Tải Xuống' }}</span>
+                            <i class="fa-solid fa-file-word" style="color: #2563eb;"></i>
                         </button>
                     </div>
                 </div>
@@ -1423,14 +1423,33 @@
                         this.updateProgress(85, 'Đang ghép file Word & Nối các bài dạy...', 'Vui lòng chờ trong giây lát...');
 
                         const blob = new Blob([res.data], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
-                        const defaultFilename = `Lich_Bao_Day_Gop_Tuan_${this.selectedTuan}.docx`;
+                        const safeLop = (this.lopName || '').replace(/[\/\\]/g, '-').trim();
+                        const safeGv = (this.gvName || '').replace(/[\/\\]/g, '').trim();
+                        const safeNamHoc = (this.namHoc || '').replace(/[\/\\]/g, '-').trim();
+                        const defaultFilename = `Tuần ${this.selectedTuan} Lớp ${safeLop} NH ${safeNamHoc} ${safeGv}.docx`;
                         
                         handleFileSave(blob, defaultFilename, this);
 
                         this.finishProgress('Đã xuất file Word Gộp (Bìa + Lịch + Giáo Án) thành công!');
                     } catch (err) {
                         this.cancelProgress();
-                        this.toastError('Lỗi xuất file Word: ' + (err.message || err), 'Xuất File Thất Bại');
+                        let errorDetail = err.message || err;
+                        if (err.response && err.response.data) {
+                            if (err.response.data instanceof Blob) {
+                                try {
+                                    const text = await err.response.data.text();
+                                    const json = JSON.parse(text);
+                                    if (json && json.detail) {
+                                        errorDetail = json.detail;
+                                    }
+                                } catch (e) {}
+                            } else if (typeof err.response.data === 'string') {
+                                errorDetail = err.response.data;
+                            } else if (err.response.data.detail) {
+                                errorDetail = err.response.data.detail;
+                            }
+                        }
+                        this.toastError('Lỗi xuất file Word: ' + errorDetail, 'Xuất File Thất Bại');
                     } finally {
                         this.exporting = false;
                     }

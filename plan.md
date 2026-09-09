@@ -220,3 +220,8 @@ Nếu bạn làm giao diện cho giáo viên dùng, mô hình tối ưu nhất l
 
 - Viết giao diện Single-Page bằng Vue/React.
 - Deploy Backend lên Render (hoặc Docker VPS), Frontend lên Netlify.
+
+Lệnh build app
+python -m PyInstaller --noconsole --onefile --name "LHT_TSS" --paths "backend" --add-data "frontend;frontend" --add-data "app/templates;app/templates" --add-data "backend;backend" run_desktop.py
+
+python -m PyInstaller AutoLichBaoDay.spec

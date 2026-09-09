@@ -1,12 +1,35 @@
 # -*- mode: python ; coding: utf-8 -*-
+from PyInstaller.utils.hooks import collect_data_files
 
+docxcompose_datas = collect_data_files('docxcompose')
 
 a = Analysis(
     ['run_desktop.py'],
     pathex=['backend'],
     binaries=[],
-    datas=[('frontend', 'frontend'), ('app/templates', 'app/templates'), ('backend', 'backend')],
-    hiddenimports=[],
+    datas=[
+        ('frontend', 'frontend'), 
+        ('app/templates', 'app/templates'), 
+        ('backend', 'backend')
+    ] + docxcompose_datas,
+    hiddenimports=[
+        'docx',
+        'docxcompose',
+        'docxcompose.composer',
+        'docxcompose.properties',
+        'docxcompose.templates',
+        'lxml',
+        'lxml.etree',
+        'uvicorn',
+        'uvicorn.logging',
+        'uvicorn.loops',
+        'uvicorn.loops.auto',
+        'uvicorn.protocols',
+        'uvicorn.protocols.http',
+        'uvicorn.protocols.http.auto',
+        'fastapi',
+        'starlette'
+    ],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
@@ -22,7 +45,7 @@ exe = EXE(
     a.binaries,
     a.datas,
     [],
-    name='AutoLichBaoDay',
+    name='LHT_TSS',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,

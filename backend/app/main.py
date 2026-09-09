@@ -96,36 +96,36 @@ async def parse_tkb_endpoint(file_tkb: UploadFile = File(...)):
 async def generate_preview(request: Request):
     """
     Preview Bảng Lịch Báo Dạy (JSON) để hiển thị trước khi xuất file.
-    Form Data:
-      - file_tkb: File TKB
-      - tuan / start_tuan: số tuần (1 tuần duy nhất)
-      - gv_name, lop, nam_hoc, start_monday
-      - file_giaoan_<tên_môn>: các file giáo án
     """
-    form = await request.form()
+    try:
+        form = await request.form()
 
-    file_tkb = form.get("file_tkb")
-    if not file_tkb or not hasattr(file_tkb, "read"):
-        raise HTTPException(status_code=400, detail="Thiếu file_tkb!")
+        file_tkb = form.get("file_tkb")
+        if not file_tkb or not hasattr(file_tkb, "read"):
+            raise HTTPException(status_code=400, detail="Thiếu file_tkb!")
 
-    tuan_raw = form.get("tuan", form.get("start_tuan", 1))
-    tuan = int(tuan_raw)
+        tuan_raw = form.get("tuan", form.get("start_tuan", 1))
+        tuan = int(tuan_raw)
 
-    tkb_bytes = await file_tkb.read()
-    slots = auto_parse_tkb(tkb_bytes, getattr(file_tkb, "filename", "TKB.docx"))
-    if not slots:
-        raise HTTPException(status_code=400, detail="Không trích xuất được dữ liệu từ TKB.")
+        if hasattr(file_tkb, "seek"):
+            await file_tkb.seek(0)
+        tkb_bytes = await file_tkb.read()
+        slots = auto_parse_tkb(tkb_bytes, getattr(file_tkb, "filename", "TKB.docx"))
+        if not slots:
+            raise HTTPException(status_code=400, detail="Không trích xuất được dữ liệu từ TKB.")
 
-    lesson_blocks: List[LessonBlock] = await _parse_all_giaoan(form)
+        lesson_blocks: List[LessonBlock] = await _parse_all_giaoan(form)
 
-    if not lesson_blocks:
-        raise HTTPException(status_code=400, detail="Vui lòng nạp ít nhất 1 file Giáo án.")
+        multi_data = generate_multi_week_schedule(slots, lesson_blocks, start_tuan=tuan, end_tuan=tuan)
+        schedule, _ = multi_data.get(tuan, ([], []))
 
-    multi_data = generate_multi_week_schedule(slots, lesson_blocks, start_tuan=tuan, end_tuan=tuan)
-    schedule, _ = multi_data.get(tuan, ([], []))
-
-    # Trả về dict { tuan: [rows] } cho frontend Vue hiển thị theo multiSchedule[activeWeek]
-    return {tuan: [row.dict() for row in schedule]}
+        return {tuan: [row.dict() for row in schedule]}
+    except HTTPException:
+        raise
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=f"Lỗi khi xem trước: {str(e)}")
 
 
 @app.post("/api/export-docx")
@@ -134,45 +134,54 @@ async def export_docx_endpoint(request: Request):
     Xuất File Word Gộp cho 1 tuần:
     Bìa + Bảng LBD + Header & Nội dung Giáo án chi tiết theo thứ tự TKB.
     """
-    form = await request.form()
+    try:
+        form = await request.form()
 
-    tuan_raw = form.get("tuan", form.get("start_tuan", 1))
-    tuan = int(tuan_raw)
-    gv_name = form.get("gv_name", "Lâm Huệ Trí")
-    lop = form.get("lop", "5/5")
-    nam_hoc = form.get("nam_hoc", "2026 - 2027")
-    start_monday = form.get("start_monday", "07/09/2026")
+        tuan_raw = form.get("tuan", form.get("start_tuan", 1))
+        tuan = int(tuan_raw)
+        gv_name = form.get("gv_name", "Lâm Huệ Trí")
+        lop = form.get("lop", "5/5")
+        nam_hoc = form.get("nam_hoc", "2026 - 2027")
+        start_monday = form.get("start_monday", "07/09/2026")
 
-    file_tkb = form.get("file_tkb")
-    if not file_tkb or not hasattr(file_tkb, "read"):
-        raise HTTPException(status_code=400, detail="Thiếu file_tkb!")
+        file_tkb = form.get("file_tkb")
+        if not file_tkb or not hasattr(file_tkb, "read"):
+            raise HTTPException(status_code=400, detail="Thiếu file_tkb!")
 
-    tkb_bytes = await file_tkb.read()
-    slots = auto_parse_tkb(tkb_bytes, getattr(file_tkb, "filename", "TKB.docx"))
-    if not slots:
-        raise HTTPException(status_code=400, detail="Không trích xuất được dữ liệu từ TKB.")
+        if hasattr(file_tkb, "seek"):
+            await file_tkb.seek(0)
+        tkb_bytes = await file_tkb.read()
+        slots = auto_parse_tkb(tkb_bytes, getattr(file_tkb, "filename", "TKB.docx"))
+        if not slots:
+            raise HTTPException(status_code=400, detail="Không trích xuất được dữ liệu từ TKB.")
 
-    lesson_blocks: List[LessonBlock] = await _parse_all_giaoan(form)
+        lesson_blocks: List[LessonBlock] = await _parse_all_giaoan(form)
 
-    multi_data = generate_multi_week_schedule(slots, lesson_blocks, start_tuan=tuan, end_tuan=tuan)
-    schedule, ordered_blocks = multi_data.get(tuan, ([], []))
+        multi_data = generate_multi_week_schedule(slots, lesson_blocks, start_tuan=tuan, end_tuan=tuan)
+        schedule, ordered_blocks = multi_data.get(tuan, ([], []))
 
-    docx_stream = export_combined_week_docx(
-        schedule=schedule,
-        ordered_blocks=ordered_blocks,
-        tuan=tuan,
-        gv_name=gv_name,
-        lop=lop,
-        nam_hoc=nam_hoc,
-        start_monday=start_monday,
-    )
+        docx_stream = export_combined_week_docx(
+            schedule=schedule,
+            ordered_blocks=ordered_blocks,
+            tuan=tuan,
+            gv_name=gv_name,
+            lop=lop,
+            nam_hoc=nam_hoc,
+            start_monday=start_monday,
+        )
 
-    filename = f"Lich_Bao_Day_Gop_Tuan_{tuan}.docx"
-    return StreamingResponse(
-        docx_stream,
-        media_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-        headers={"Content-Disposition": f"attachment; filename={filename}"}
-    )
+        filename = f"Lich_Bao_Day_Gop_Tuan_{tuan}.docx"
+        return StreamingResponse(
+            docx_stream,
+            media_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            headers={"Content-Disposition": f"attachment; filename={filename}"}
+        )
+    except HTTPException:
+        raise
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=f"Lỗi xuất file Word: {str(e)}")
 
 
 # Giữ backward-compat endpoint cũ trỏ vào endpoint mới
@@ -194,11 +203,12 @@ async def _parse_all_giaoan(form) -> List[LessonBlock]:
     Trả về List[LessonBlock] tổng hợp tất cả môn.
     """
     all_blocks: List[LessonBlock] = []
-    # Dùng form.items() hỗ trợ Starlette FormData
     for key, val in form.items():
         if key.startswith("file_giaoan_") and hasattr(val, "read"):
             subj_name = key.replace("file_giaoan_", "").strip()
             try:
+                if hasattr(val, "seek"):
+                    await val.seek(0)
                 g_bytes = await val.read()
                 if not g_bytes:
                     continue
