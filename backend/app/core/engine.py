@@ -124,6 +124,61 @@ def _build_lesson_block_map(
     return dict(result)
 
 
+def _calculate_initial_cursors(
+    tkb_slots: List[TKBSlot],
+    block_map: Dict[str, List[LessonBlock]],
+    start_tuan: int
+) -> Dict[str, int]:
+    """
+    Tính con trỏ ban đầu cho từng môn.
+    Tự động phát hiện File lẻ (chỉ có bài của 1 tuần) vs File gộp (chứa nhiều tuần):
+    - Nếu tổng số bài của môn trong block_map <= số tiết/tuần * (start_tuan - 1)
+      hoặc tổng số bài <= số tiết/tuần * 1.5:
+      => Đây là File Giáo án lẻ của riêng tuần đang chọn -> cursor = 0 (không skip).
+    - Ngược lại:
+      => File Giáo án gộp cả năm/nhiều tuần -> cursor = count * (start_tuan - 1).
+    """
+    cursors: Dict[str, int] = defaultdict(int)
+    if start_tuan <= 1:
+        return cursors
+
+    slots_per_week: Dict[str, int] = defaultdict(int)
+    for slot in tkb_slots:
+        slots_per_week[normalize_subject_name(slot.mon)] += 1
+
+    for mon_key, count_per_week in slots_per_week.items():
+        if count_per_week <= 0:
+            continue
+        blocks = block_map.get(mon_key, [])
+        needed_skip = count_per_week * (start_tuan - 1)
+
+        if len(blocks) <= needed_skip or len(blocks) <= int(count_per_week * 1.5):
+            cursors[mon_key] = 0
+        else:
+            cursors[mon_key] = needed_skip
+
+    return cursors
+
+
+def _format_display_ppct(block: LessonBlock, slot_idx: int, count_per_week: int, tuan: int) -> str:
+    """
+    Tính số tiết PPCT hiển thị tự động cộng dồn cho tuần `tuan`.
+    - Tiết PPCT chuẩn cho slot_idx trong tuần tuan = count_per_week * (tuan - 1) + slot_idx + 1.
+    - Nếu trong file đã ghi sẵn số tiết lớn hơn hoặc bằng mốc của tuần (VD: 5 >= 5) -> dùng số trong file.
+    - Ngược lại (file lẻ 1, 2, 3... hoặc rỗng) -> dùng calculated_ppct.
+    """
+    calculated_ppct = count_per_week * (tuan - 1) + slot_idx + 1
+    if block and block.tiet_ppct:
+        try:
+            val = int(block.tiet_ppct)
+            min_tuan_ppct = count_per_week * (tuan - 1) + 1
+            if val >= min_tuan_ppct:
+                return str(val)
+        except (ValueError, TypeError):
+            pass
+    return str(calculated_ppct)
+
+
 def generate_schedule(
     tkb_slots: List[TKBSlot],
     lesson_blocks: List[LessonBlock],
@@ -137,28 +192,14 @@ def generate_schedule(
       - schedule: List[ScheduleRow] — dữ liệu cho Bảng LBD
       - ordered_blocks: List[LessonBlock] — block nội dung xếp đúng thứ tự TKB
         (dùng để append vào file Word gộp)
-
-    Logic:
-      - Với mỗi môn, duy trì con trỏ (cursor) đếm tiết PPCT.
-      - Con trỏ bắt đầu = (start_tuan - 1) * số_tiết_mỗi_tuần_của_môn + 1
-        (đơn giản hóa: bỏ qua các tuần trước bằng cách skip cursor trước).
-      - Quét TKB theo Thứ 2→6, Sáng trước Chiều.
     """
     block_map = _build_lesson_block_map(lesson_blocks)
+    target_tuan = start_tuan if start_tuan > 1 else tuan
+    cursors = _calculate_initial_cursors(tkb_slots, block_map, target_tuan)
 
-    # Cursor: key = tên môn chuẩn hóa, value = index hiện tại trong block_map[key]
-    cursors: Dict[str, int] = defaultdict(int)
-
-    # Skip các tuần trước start_tuan (nếu cần)
-    # Đếm số lần mỗi môn xuất hiện trong 1 tuần TKB
-    if start_tuan > 1 and tuan == start_tuan:
-        # Đếm số tiết/tuần mỗi môn
-        slots_per_week: Dict[str, int] = defaultdict(int)
-        for slot in tkb_slots:
-            slots_per_week[normalize_subject_name(slot.mon)] += 1
-        # Skip (start_tuan - 1) tuần
-        for mon_key, count_per_week in slots_per_week.items():
-            cursors[mon_key] = count_per_week * (tuan - 1)
+    slots_per_week: Dict[str, int] = defaultdict(int)
+    for slot in tkb_slots:
+        slots_per_week[normalize_subject_name(slot.mon)] += 1
 
     # Sắp xếp TKB: Thứ 2→6, Sáng trước Chiều, Tiết nhỏ trước lớn
     thu_order = {"Hai": 0, "Ba": 1, "Tư": 2, "Năm": 3, "Sáu": 4, "Bảy": 5}
@@ -174,22 +215,29 @@ def generate_schedule(
 
     schedule: List[ScheduleRow] = []
     ordered_blocks: List[LessonBlock] = []
+    subject_slot_counters: Dict[str, int] = defaultdict(int)
 
     for slot in sorted_slots:
         norm_mon = normalize_subject_name(slot.mon)
         blocks_for_mon = block_map.get(norm_mon, [])
         cursor = cursors[norm_mon]
 
+        slot_idx = subject_slot_counters[norm_mon]
+        subject_slot_counters[norm_mon] += 1
+
         if cursor < len(blocks_for_mon):
             block = blocks_for_mon[cursor]
             cursors[norm_mon] += 1
+
+            count_pw = slots_per_week.get(norm_mon, 1)
+            display_ppct = _format_display_ppct(block, slot_idx, count_pw, target_tuan)
 
             schedule.append(ScheduleRow(
                 thu=slot.thu,
                 buoi=slot.buoi,
                 tiet_tkb=slot.tiet_tkb,
                 mon=slot.mon,
-                tiet_ppct=str(block.tiet_ppct),
+                tiet_ppct=display_ppct,
                 ten_bai=block.ten_bai,
                 thiet_bi="",
                 ghi_chu=""
@@ -207,7 +255,6 @@ def generate_schedule(
                 thiet_bi="",
                 ghi_chu=""
             ))
-            # Không append block — giáo án chuyên trách bỏ trống
 
     return schedule, ordered_blocks
 
@@ -223,23 +270,12 @@ def generate_multi_week_schedule(
     Trả về dict: tuan_num → (schedule, ordered_blocks)
     """
     result = {}
-    # Xây block map một lần, dùng cursor chạy liên tục qua các tuần
     block_map = _build_lesson_block_map(lesson_blocks)
-    cursors: Dict[str, int] = defaultdict(int)
+    cursors = _calculate_initial_cursors(tkb_slots, block_map, start_tuan)
 
-    # Skip tuần trước start_tuan
-    if start_tuan > 1:
-        thu_order = {"Hai": 0, "Ba": 1, "Tư": 2, "Năm": 3, "Sáu": 4, "Bảy": 5}
-        buoi_order = {"Sáng": 0, "Chiều": 1}
-        sorted_slots = sorted(
-            tkb_slots,
-            key=lambda s: (thu_order.get(s.thu, 9), buoi_order.get(s.buoi, 9), s.tiet_tkb)
-        )
-        slots_per_week: Dict[str, int] = defaultdict(int)
-        for slot in sorted_slots:
-            slots_per_week[normalize_subject_name(slot.mon)] += 1
-        for mon_key, count in slots_per_week.items():
-            cursors[mon_key] = count * (start_tuan - 1)
+    slots_per_week: Dict[str, int] = defaultdict(int)
+    for slot in tkb_slots:
+        slots_per_week[normalize_subject_name(slot.mon)] += 1
 
     thu_order = {"Hai": 0, "Ba": 1, "Tư": 2, "Năm": 3, "Sáu": 4, "Bảy": 5}
     buoi_order = {"Sáng": 0, "Chiều": 1}
@@ -251,21 +287,27 @@ def generate_multi_week_schedule(
     for t in range(start_tuan, end_tuan + 1):
         week_schedule: List[ScheduleRow] = []
         week_ordered_blocks: List[LessonBlock] = []
+        subject_slot_counters: Dict[str, int] = defaultdict(int)
 
         for slot in sorted_slots:
             norm_mon = normalize_subject_name(slot.mon)
             blocks_for_mon = block_map.get(norm_mon, [])
             cursor = cursors[norm_mon]
 
+            slot_idx = subject_slot_counters[norm_mon]
+            subject_slot_counters[norm_mon] += 1
+
             if cursor < len(blocks_for_mon):
                 block = blocks_for_mon[cursor]
                 cursors[norm_mon] += 1
+                count_pw = slots_per_week.get(norm_mon, 1)
+                display_ppct = _format_display_ppct(block, slot_idx, count_pw, t)
                 week_schedule.append(ScheduleRow(
                     thu=slot.thu,
                     buoi=slot.buoi,
                     tiet_tkb=slot.tiet_tkb,
                     mon=slot.mon,
-                    tiet_ppct=str(block.tiet_ppct),
+                    tiet_ppct=display_ppct,
                     ten_bai=block.ten_bai,
                     thiet_bi="",
                     ghi_chu=""

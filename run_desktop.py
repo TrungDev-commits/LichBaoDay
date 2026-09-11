@@ -4,6 +4,14 @@ import threading
 import sys
 import os
 import base64
+import ctypes
+
+# Khai báo AppID riêng cho Windows Taskbar
+if sys.platform == 'win32':
+    try:
+        ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID('LHT.AutoLichBaoDay.App.3.0')
+    except Exception:
+        pass
 
 # Cấu hình đường dẫn PyInstaller (_MEIPASS) khi đóng gói .exe
 if getattr(sys, 'frozen', False):

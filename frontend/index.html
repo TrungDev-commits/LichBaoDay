@@ -1110,13 +1110,13 @@
                                 <td class="text-center">{{ row.tiet_tkb }}</td>
                                 <td><strong style="color: #1e3a8a;">{{ row.mon }}</strong></td>
                                 <td class="text-center">
-                                    <input type="text" v-model="row.tiet_ppct" class="text-center">
+                                    <input type="text" v-model="row.tiet_ppct" class="text-center" readonly style="background-color: #f1f5f9; cursor: not-allowed;" title="Tiết PPCT được tính tự động từ giáo án, không thể chỉnh sửa">
                                 </td>
                                 <td>
-                                    <input type="text" v-model="row.ten_bai">
+                                    <input type="text" v-model="row.ten_bai" placeholder="Nhập tên bài dạy...">
                                 </td>
                                 <td>
-                                    <input type="text" v-model="row.ghi_chu">
+                                    <input type="text" v-model="row.ghi_chu" placeholder="Ghi chú...">
                                 </td>
                             </tr>
                         </tbody>
@@ -1402,6 +1402,10 @@
                     formData.append('nam_hoc', this.namHoc);
                     formData.append('start_monday', this.formatDateStr(this.startMonday));
                     formData.append('file_tkb', this.fileTkb);
+
+                    if (this.multiSchedule) {
+                        formData.append('edited_multi_schedule', JSON.stringify(this.multiSchedule));
+                    }
 
                     this.subjectBoxes.forEach(box => {
                         if (box.subjectName && box.file) {

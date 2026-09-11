@@ -61,11 +61,12 @@ def _parse_start_monday(start_monday: str) -> datetime.datetime:
     return datetime.datetime.now()
 
 
-def _date_for_thu(start_monday: str, thu: str) -> datetime.datetime:
-    """Tính ngày cụ thể của thứ X trong tuần bắt đầu từ start_monday."""
+def _date_for_thu(start_monday: str, thu: str, tuan: int = 1) -> datetime.datetime:
+    """Tính ngày cụ thể của thứ X trong tuần `tuan` bắt đầu từ start_monday (Thứ 2 của Tuần 1)."""
     d = _parse_start_monday(start_monday)
-    offset = _THU_TO_DAY_OFFSET.get(thu, 0)
-    return d + datetime.timedelta(days=offset)
+    week_offset = (tuan - 1) * 7
+    day_offset = _THU_TO_DAY_OFFSET.get(thu, 0)
+    return d + datetime.timedelta(days=week_offset + day_offset)
 
 
 def _add_page_break(doc: Document):
@@ -257,7 +258,7 @@ def fill_template_docx(
 
     doc = Document(template_path)
     d_start = _parse_start_monday(start_monday)
-    d_tuan_start = d_start  # start_monday là thứ Hai của tuần 1
+    d_tuan_start = d_start + datetime.timedelta(days=(tuan - 1) * 7)  # Thứ 2 của Tuần tuan
     d_tuan_end = d_tuan_start + datetime.timedelta(days=4)
 
     ngay_tu = d_tuan_start.strftime("%d/%m/%Y")
@@ -434,8 +435,8 @@ def export_combined_week_docx(
     block_iter = iter(ordered_blocks)
 
     for row in schedule:
-        # Tính ngày của tiết này
-        date = _date_for_thu(start_monday, row.thu)
+        # Tính ngày của tiết này theo Tuần tuan
+        date = _date_for_thu(start_monday, row.thu, tuan=tuan)
 
         if row.tiet_ppct:  # có giáo án
             block = next(block_iter, None)
@@ -519,7 +520,7 @@ def _append_giaoan_blocks(
     """Helper: append tất cả header + block giáo án cho một tuần vào composer."""
     block_iter = iter(ordered_blocks)
     for row in schedule:
-        date = _date_for_thu(start_monday, row.thu)
+        date = _date_for_thu(start_monday, row.thu, tuan=tuan)
         if row.tiet_ppct:
             block = next(block_iter, None)
         else:
