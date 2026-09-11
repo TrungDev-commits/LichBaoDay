@@ -44,5 +44,6 @@ class SubjectFileItem(BaseModel):
 
 class ParseTkbResponse(BaseModel):
     unique_subjects: List[str]
+    unique_classes: List[str] = []
     slots: List[TKBSlot]
 

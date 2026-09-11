@@ -1,8 +1,38 @@
 import io
-from typing import List
+import re
+from typing import List, Tuple
 import openpyxl
 from docx import Document
 from app.core.schemas import TKBSlot
+
+
+def _extract_mon_and_lop(raw_text: str) -> Tuple[str, str]:
+    """
+    Tách tên môn và tên lớp từ nội dung ô TKB.
+    Ví dụ:
+      'Toán (Lớp 3/1)' -> mon='Toán', lop='3/1'
+      '3/1 - Toán'     -> mon='Toán', lop='3/1'
+      'Toán 3/1'       -> mon='Toán', lop='3/1'
+      'Toán'           -> mon='Toán', lop=''
+    """
+    if not raw_text:
+        return "", ""
+    txt = raw_text.strip()
+
+    # Match pattern ngoặc đơn: "Toán (Lớp 3/1)" hoặc "Toán (3/1)"
+    m2 = re.search(r'^(.*?)\s*\((?:lớp\s*)?([^)]+)\)$', txt, re.IGNORECASE)
+    if m2:
+        return m2.group(1).strip(), m2.group(2).strip()
+
+    # Match pattern lớp dạng 3/1, 3/2, 4/5, 5A, 3B
+    m = re.search(r'\b([1-5]/[1-9]|[1-5][A-H])\b', txt, re.IGNORECASE)
+    if m:
+        lop = m.group(1)
+        mon = txt.replace(m.group(0), "").replace("Lớp", "").replace("lớp", "").strip(" -():,")
+        return mon or txt, lop
+
+    return txt, ""
+
 
 def parse_tkb_excel(file_bytes: bytes) -> List[TKBSlot]:
     """
@@ -11,7 +41,7 @@ def parse_tkb_excel(file_bytes: bytes) -> List[TKBSlot]:
     """
     wb = openpyxl.load_workbook(io.BytesIO(file_bytes), data_only=True)
     sheet = wb.active
-    
+
     slots: List[TKBSlot] = []
     rows = list(sheet.iter_rows(values_only=True))
     if not rows:
@@ -41,11 +71,11 @@ def parse_tkb_excel(file_bytes: bytes) -> List[TKBSlot]:
     if day_cols and header_row_idx != -1:
         current_buoi = "Sáng"
         tiet_counter = 1
-        
+
         for r_idx in range(header_row_idx + 1, len(rows)):
             row = rows[r_idx]
             first_cell = str(row[0]).strip().lower() if row[0] is not None else ""
-            
+
             if "chiều" in first_cell:
                 current_buoi = "Chiều"
                 tiet_counter = 1
@@ -54,24 +84,27 @@ def parse_tkb_excel(file_bytes: bytes) -> List[TKBSlot]:
                 current_buoi = "Sáng"
                 tiet_counter = 1
                 continue
-                
+
             has_data = False
             for c_idx, thu_name in day_cols.items():
                 if c_idx < len(row) and row[c_idx] is not None:
-                    mon_name = str(row[c_idx]).strip()
-                    if mon_name and mon_name != "-":
+                    raw_val = str(row[c_idx]).strip()
+                    if raw_val and raw_val != "-":
                         has_data = True
+                        mon_name, lop_name = _extract_mon_and_lop(raw_val)
                         slots.append(TKBSlot(
                             thu=thu_name,
                             buoi=current_buoi,
                             tiet_tkb=tiet_counter,
-                            mon=mon_name
+                            mon=mon_name,
+                            lop=lop_name or "5/5"
                         ))
             if has_data:
                 tiet_counter += 1
         return slots
 
     return slots
+
 
 def parse_tkb_docx(file_bytes: bytes) -> List[TKBSlot]:
     """
@@ -87,7 +120,7 @@ def parse_tkb_docx(file_bytes: bytes) -> List[TKBSlot]:
 
         for r_idx, row in enumerate(table.rows):
             cells_text = [c.text.strip() for c in row.cells]
-            
+
             if not day_cols:
                 for c_idx, text in enumerate(cells_text):
                     t_lower = text.lower()
@@ -127,20 +160,22 @@ def parse_tkb_docx(file_bytes: bytes) -> List[TKBSlot]:
             has_mon = False
             for c_idx, thu_name in day_cols.items():
                 if c_idx < len(cells_text):
-                    mon_name = cells_text[c_idx]
-                    if mon_name and not mon_name.isdigit() and len(mon_name) > 1 and "NGHỈ GIẢI LAO" not in mon_name.upper():
+                    raw_val = cells_text[c_idx]
+                    if raw_val and not raw_val.isdigit() and len(raw_val) > 1 and "NGHỈ GIẢI LAO" not in raw_val.upper():
                         has_mon = True
+                        mon_name, lop_name = _extract_mon_and_lop(raw_val)
                         slots.append(TKBSlot(
                             thu=thu_name,
                             buoi=current_buoi,
                             tiet_tkb=tiet_num,
                             mon=mon_name,
-                            lop="5/5"
+                            lop=lop_name or "5/5"
                         ))
             if has_mon:
                 tiet_counter += 1
 
     return slots
+
 
 def auto_parse_tkb(file_bytes: bytes, filename: str) -> List[TKBSlot]:
     """
@@ -164,6 +199,7 @@ def auto_parse_tkb(file_bytes: bytes, filename: str) -> List[TKBSlot]:
 
     return []
 
+
 def extract_unique_subjects(slots: List[TKBSlot]) -> List[str]:
     """
     Trích xuất danh sách môn học độc bản từ danh sách slot TKB.
@@ -175,5 +211,20 @@ def extract_unique_subjects(slots: List[TKBSlot]) -> List[str]:
         if mon_clean and mon_clean not in seen and not mon_clean.isdigit():
             seen.add(mon_clean)
             unique.append(mon_clean)
+    return unique
+
+
+def extract_unique_classes(slots: List[TKBSlot]) -> List[str]:
+    """
+    Trích xuất danh sách các lớp độc bản từ danh sách slot TKB.
+    """
+    seen = set()
+    unique = []
+    for s in slots:
+        if s.lop:
+            l_clean = s.lop.strip()
+            if l_clean and l_clean not in seen and l_clean != "5/5":
+                seen.add(l_clean)
+                unique.append(l_clean)
     return unique
 

@@ -338,10 +338,10 @@
             box-shadow: 0 2px 6px rgba(16, 185, 129, 0.15);
         }
 
-        /* DYNAMIC CRUD SUBJECT BOXES GRID */
+        /* DYNAMIC CRUD SUBJECT BOXES GRID & CARDS ENHANCED */
         .subject-boxes-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
             gap: 16px;
             margin-top: 16px;
         }
@@ -350,82 +350,150 @@
             background: #ffffff;
             border: 1px solid #e2e8f0;
             border-radius: 14px;
-            padding: 18px;
+            padding: 16px;
             display: flex;
             flex-direction: column;
             gap: 12px;
             position: relative;
+            box-sizing: border-box;
+            overflow: hidden;
             transition: all 0.2s ease;
-            box-shadow: var(--shadow-sm);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
         }
 
         .subject-box-card:hover {
             border-color: #cbd5e1;
-            box-shadow: var(--shadow-md);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.07);
         }
 
         .subject-box-card.has-file {
-            border-color: #93c5fd;
-            background: #f8fafc;
+            border-color: #86efac;
+            background: linear-gradient(180deg, #ffffff 0%, #f0fdf4 100%);
         }
 
         .box-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 10px;
+            gap: 8px;
+            width: 100%;
+            min-width: 0;
+        }
+
+        .box-title-wrap {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+            min-width: 0;
         }
 
         .box-subject-input {
-            flex: 1;
+            width: 100%;
+            min-width: 0;
             font-weight: 700;
-            font-size: 14px;
-            color: #1e293b;
+            font-size: 13.5px;
+            color: #0f172a;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 6px 10px;
+            background: #f8fafc;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+        }
+
+        .box-subject-input:focus {
+            background: #ffffff;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+            outline: none;
+        }
+
+        .box-header-actions {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+
+        .subject-status-badge {
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 8px;
+            border-radius: 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .subject-status-badge.has-file {
+            background: #dcfce7;
+            color: #15803d;
+            border: 1px solid #86efac;
+        }
+
+        .subject-status-badge.no-file {
+            background: #f1f5f9;
+            color: #64748b;
+            border: 1px solid #e2e8f0;
         }
 
         .btn-delete-box {
-            background: #fee2e2;
-            color: var(--accent-red);
-            border: none;
-            width: 34px;
-            height: 34px;
-            border-radius: 10px;
+            background: #fef2f2;
+            color: #ef4444;
+            border: 1px solid #fecaca;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             transition: all 0.2s ease;
+            flex-shrink: 0;
         }
 
         .btn-delete-box:hover {
-            background: var(--accent-red);
+            background: #ef4444;
             color: white;
+            border-color: #ef4444;
         }
 
         .file-input-wrapper {
             position: relative;
-            background: white;
-            border: 1px dashed var(--border-color);
+            background: #f8fafc;
+            border: 2px dashed #cbd5e1;
             border-radius: 10px;
-            padding: 12px 14px;
+            padding: 14px 10px;
             text-align: center;
             cursor: pointer;
-            font-size: 13px;
+            font-size: 12.5px;
             font-weight: 600;
-            color: var(--text-sub);
+            color: #64748b;
             transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            min-height: 80px;
+            width: 100%;
+            box-sizing: border-box;
         }
 
         .file-input-wrapper:hover {
-            border-color: var(--primary);
-            color: var(--primary);
-            background: var(--primary-light);
+            border-color: #2563eb;
+            color: #2563eb;
+            background: #eff6ff;
         }
 
         .file-input-wrapper.active {
-            border-color: var(--accent-green);
-            background: #f0fdf4;
-            color: #166534;
+            border-color: #10b981;
+            border-style: solid;
+            background: #ecfdf5;
+            color: #047857;
         }
 
         .file-input-wrapper input[type="file"] {
@@ -436,12 +504,12 @@
 
         .btn-add-box {
             background: #ffffff;
-            color: var(--primary);
+            color: #2563eb;
             border: 2px dashed #93c5fd;
             border-radius: 14px;
-            padding: 16px;
+            padding: 20px 16px;
             font-weight: 700;
-            font-size: 14px;
+            font-size: 13.5px;
             cursor: pointer;
             display: flex;
             flex-direction: column;
@@ -449,12 +517,157 @@
             justify-content: center;
             gap: 8px;
             transition: all 0.2s ease;
-            min-height: 110px;
+            min-height: 130px;
+            box-sizing: border-box;
         }
 
         .btn-add-box:hover {
-            background: var(--primary-light);
+            background: #eff6ff;
+            border-color: #2563eb;
+        }
+
+        /* FORM GRID BALANCED (3-COLUMN LAYOUT) */
+        .info-grid-balanced {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 20px;
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 14px;
+            border: 1px solid #e2e8f0;
+        }
+
+        @media (max-width: 900px) {
+            .info-grid-balanced {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .info-grid-balanced {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ROLE SWITCHER HEADER CONTROL */
+        .role-switcher-header {
+            display: inline-flex;
+            background: #f1f5f9;
+            padding: 4px;
+            border-radius: 12px;
+            border: 1px solid #cbd5e1;
+        }
+
+        .role-btn {
+            border: none;
+            background: transparent;
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 700;
+            color: #64748b;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .role-btn.active {
+            background: #2563eb;
+            color: #ffffff;
+            box-shadow: 0 2px 6px rgba(37, 99, 235, 0.3);
+        }
+
+        .role-badge-display {
+            height: 40px;
+            display: flex;
+            align-items: center;
+        }
+
+        .role-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 14px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 12.5px;
+            width: 100%;
+        }
+
+        .role-pill.gvcn {
+            background: #eff6ff;
+            color: #1d4ed8;
+            border: 1px solid #bfdbfe;
+        }
+
+        .role-pill.gvbm {
+            background: #ecfdf5;
+            color: #047857;
+            border: 1px solid #a7f3d0;
+        }
+
+        /* TKB MATRIX GRID STYLES */
+        .tkb-matrix-card {
+            margin-top: 20px;
+            background: #ffffff;
+            border-radius: 14px;
+            border: 1px solid #cbd5e1;
+            padding: 20px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .tkb-matrix-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 14px;
+        }
+
+        .tkb-matrix-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        .tkb-matrix-table th, .tkb-matrix-table td {
+            border: 1px solid #cbd5e1;
+            padding: 6px 8px;
+            vertical-align: middle;
+        }
+
+        .matrix-cell-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .matrix-cell-input {
+            width: 100%;
+            padding: 5px 8px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            outline: none;
+            background: #ffffff;
+            transition: all 0.2s ease;
+        }
+
+        .matrix-cell-input:focus {
             border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+        }
+
+        .matrix-input-mon {
+            color: #1e3a8a;
+        }
+
+        .matrix-input-lop {
+            color: #059669;
+            font-weight: 700;
         }
 
         /* 3. PROGRESS BAR COMPONENT */
@@ -964,33 +1177,69 @@
                     <div class="card-title">
                         <span class="step-pill">1</span>
                         <i class="fa-solid fa-sliders" style="color: #2563eb;"></i>
-                        <span>Cấu Hình Thông Tin</span>
+                        <span>Cấu Hình Thông Tin & Thời Khóa Biểu</span>
+                    </div>
+
+                    <!-- BỘ CHỌN VAI TRÒ GIÁO VIÊN (SEGMENTED CONTROL TRÊN HEADER) -->
+                    <div class="role-switcher-header">
+                        <button type="button" class="role-btn" :class="{ active: teacherRole === 'gvcn' }" @click="teacherRole = 'gvcn'">
+                            <i class="fa-solid fa-chalkboard-user"></i> GV Chủ Nhiệm
+                        </button>
+                        <button type="button" class="role-btn" :class="{ active: teacherRole === 'gvbm' }" @click="teacherRole = 'gvbm'">
+                            <i class="fa-solid fa-user-graduate"></i> GV Bộ Môn
+                        </button>
                     </div>
                 </div>
 
-                <div class="info-grid">
+                <!-- BỐ CỤC LƯỚI 6 Ô CÂN BẰNG (3 CỘT X 2 HÀNG) -->
+                <div class="info-grid-balanced">
                     <div class="form-group">
                         <label class="form-label"><i class="fa-solid fa-user-tie"></i> Tên Giáo Viên</label>
                         <input type="text" v-model="gvName" class="form-input" placeholder="VD: Lâm Huệ Trí">
                     </div>
+                    
                     <div class="form-group">
-                        <label class="form-label"><i class="fa-solid fa-chalkboard-user"></i> Tên Lớp Học</label>
-                        <input type="text" v-model="lopName" class="form-input" placeholder="VD: 5/5">
+                        <label class="form-label">
+                            <i class="fa-solid fa-chalkboard-user"></i> 
+                            {{ teacherRole === 'gvbm' ? 'Danh Sách Lớp Dạy' : 'Tên Lớp Chủ Nhiệm' }}
+                        </label>
+                        <input type="text" v-model="lopName" class="form-input" :placeholder="teacherRole === 'gvbm' ? 'VD: 3/1; 3/2; 3/4 (Tự động từ TKB)' : 'VD: 5/5'">
                     </div>
+
                     <div class="form-group">
                         <label class="form-label"><i class="fa-solid fa-graduation-cap"></i> Năm Học</label>
                         <input type="text" v-model="namHoc" class="form-input" placeholder="VD: 2026 - 2027">
                     </div>
+
                     <div class="form-group">
                         <label class="form-label"><i class="fa-regular fa-calendar-days"></i> Ngày Bắt Đầu (Thứ 2)</label>
                         <input type="date" v-model="startMonday" class="form-input">
                     </div>
+
                     <div class="form-group">
                         <label class="form-label"><i class="fa-solid fa-list-ol"></i> Chọn Tuần Học</label>
                         <select v-model.number="selectedTuan" class="form-select">
                             <option v-for="w in 35" :key="w" :value="w">Tuần {{ w }}</option>
                         </select>
                     </div>
+
+                    <div class="form-group">
+                        <label class="form-label"><i class="fa-solid fa-user-shield"></i> Chế Độ Giảng Dạy</label>
+                        <div class="role-badge-display">
+                            <div class="role-pill" :class="teacherRole">
+                                <i :class="teacherRole === 'gvcn' ? 'fa-solid fa-chalkboard-user' : 'fa-solid fa-user-graduate'"></i>
+                                <span>{{ teacherRole === 'gvcn' ? 'GV Chủ Nhiệm (1 Lớp)' : 'GV Bộ Môn (Nhiều Lớp)' }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CALLOUT HƯỚNG DẪN KHI Ở CHẾ ĐỘ GVBM -->
+                <div v-if="teacherRole === 'gvbm'" style="background: #f0fdf4; border: 1px dashed #6ee7b7; border-radius: 12px; padding: 12px 16px; margin-bottom: 20px; font-size: 13px; color: #047857; display: flex; align-items: center; gap: 10px;">
+                    <i class="fa-solid fa-wand-magic-sparkles" style="font-size: 18px; color: #10b981; flex-shrink: 0;"></i>
+                    <span>
+                        <strong>Chế độ GV Bộ Môn:</strong> Hệ thống sẽ tự động tổng hợp danh sách các lớp dạy từ file Thời khóa biểu và hỗ trợ bạn tạo 1 file báo giảng duy nhất hoàn chỉnh.
+                    </span>
                 </div>
 
                 <div class="dropzone-box" :class="{ 'has-file': fileTkb }">
@@ -1005,9 +1254,56 @@
                         <i class="fa-solid fa-circle-check"></i> {{ fileTkb.name }}
                     </div>
                 </div>
+
+                <!-- MA TRẬN TKB TRỰC QUAN (INTERACTIVE TKB GRID) -->
+                <div v-if="parsedSlots.length > 0" class="tkb-matrix-card">
+                    <div class="tkb-matrix-header">
+                        <div style="font-weight: 700; color: #1e293b; display: flex; align-items: center; gap: 8px;">
+                            <i class="fa-solid fa-table-cells-large" style="color: #2563eb;"></i>
+                            <span>Bảng Thời Khóa Biểu Trực Quan (Chỉnh sửa trực tiếp trên ô)</span>
+                        </div>
+                        <span style="font-size: 12px; color: #059669; font-weight: 600;">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i> Tự động gom Lớp & Môn học
+                        </span>
+                    </div>
+                    <div class="table-wrapper">
+                        <table class="tkb-matrix-table">
+                            <thead>
+                                <tr style="background: #f1f5f9;">
+                                    <th style="width: 70px; text-align: center;">Buổi</th>
+                                    <th style="width: 55px; text-align: center;">Tiết</th>
+                                    <th v-for="day in ['Hai', 'Ba', 'Tư', 'Năm', 'Sáu']" :key="day" style="text-align: center;">Thứ {{ day }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template v-for="b in ['Sáng', 'Chiều']">
+                                    <tr v-for="t in 5" :key="b + '_' + t">
+                                        <td v-if="t === 1" rowspan="5" style="text-align: center; font-weight: 700; background: #f8fafc; color: #334155;">{{ b }}</td>
+                                        <td style="text-align: center; font-weight: 600; color: #64748b;">{{ t }}</td>
+                                        <td v-for="day in ['Hai', 'Ba', 'Tư', 'Năm', 'Sáu']" :key="day">
+                                            <div class="matrix-cell-group">
+                                                <input type="text" 
+                                                       v-model="getGridSlot(day, b, t).mon" 
+                                                       @input="onGridCellChange"
+                                                       class="matrix-cell-input matrix-input-mon" 
+                                                       placeholder="-">
+                                                <input v-if="teacherRole === 'gvbm'" 
+                                                       type="text" 
+                                                       v-model="getGridSlot(day, b, t).lop" 
+                                                       @input="onGridCellChange"
+                                                       class="matrix-cell-input matrix-input-lop" 
+                                                       placeholder="Lớp...">
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </section>
 
-            <!-- BƯỚC 2: QUẢN LÝ BOX GIÁO ÁN THEO MÔN (CRUD BOX) -->
+            <!-- BƯỚC 2: QUẢN LÝ BOX GIÁO ÁN THEO MÔN (CRUD BOX ENHANCED) -->
             <section class="card">
                 <div class="card-header">
                     <div class="card-title">
@@ -1016,44 +1312,66 @@
                         <span>Giáo Án Từng Môn Học</span>
                     </div>
 
-                    <div style="display: flex; gap: 10px;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
                         <button class="btn-action" style="padding: 8px 16px; font-size: 13px;" @click="addSubjectBox('')">
                             <i class="fa-solid fa-plus"></i> Thêm Môn Học
                         </button>
                     </div>
                 </div>
 
+                <!-- LƯỚI QUẢN LÝ CÁC BOX MÔN HỌC & GIÁO ÁN -->
                 <div class="subject-boxes-grid">
                     <div v-for="(box, idx) in subjectBoxes" :key="idx" class="subject-box-card" :class="{ 'has-file': box.file }">
                         <div class="box-header">
-                            <input type="text" v-model="box.subjectName" class="form-input box-subject-input" placeholder="Tên môn (VD: TOÁN)">
-                            <button class="btn-delete-box" @click="removeSubjectBox(idx)" title="Xóa Box này">
-                                <i class="fa-solid fa-trash-can"></i>
-                            </button>
+                            <div class="box-title-wrap">
+                                <i class="fa-solid fa-book-open" style="color: #2563eb; font-size: 15px; flex-shrink: 0;"></i>
+                                <input type="text" v-model="box.subjectName" class="box-subject-input" placeholder="Tên môn (VD: TOÁN)">
+                            </div>
+                            <div class="box-header-actions">
+                                <span class="subject-status-badge" :class="box.file ? 'has-file' : 'no-file'">
+                                    <i :class="box.file ? 'fa-solid fa-circle-check' : 'fa-solid fa-circle-notch'"></i>
+                                    <span>{{ box.file ? 'Đã nạp' : 'Chưa nạp' }}</span>
+                                </span>
+                                <button class="btn-delete-box" @click="removeSubjectBox(idx)" title="Xóa môn học này">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </button>
+                            </div>
                         </div>
 
                         <div class="file-input-wrapper" :class="{ active: box.file }">
                             <input type="file" @change="onSubjectFileSelect($event, box)" accept=".docx">
-                            <span v-if="box.file">
-                                <i class="fa-solid fa-file-word" style="color: #2563eb;"></i> <strong>{{ box.file.name }}</strong>
-                            </span>
-                            <span v-else>
-                                <i class="fa-solid fa-cloud-arrow-up"></i> Nhập giáo án môn {{ box.subjectName || 'học' }} (.docx)
-                            </span>
+                            <template v-if="box.file">
+                                <div style="display: flex; align-items: center; gap: 8px; font-weight: 700; color: #15803d;">
+                                    <i class="fa-solid fa-file-word" style="font-size: 20px; color: #2563eb;"></i>
+                                    <span>{{ box.file.name }}</span>
+                                </div>
+                                <div style="font-size: 11px; color: #059669;">Nhấp hoặc kéo thả file khác để thay thế</div>
+                            </template>
+                            <template v-else>
+                                <i class="fa-solid fa-cloud-arrow-up" style="font-size: 22px; color: #3b82f6; margin-bottom: 2px;"></i>
+                                <div>Chọn hoặc kéo thả file Giáo Án <strong>{{ box.subjectName || 'môn học' }}</strong> (.docx)</div>
+                            </template>
                         </div>
                     </div>
 
+                    <!-- THẺ THÊM MÔN HỌC MỚI -->
                     <button class="btn-add-box" @click="addSubjectBox('')">
-                        <i class="fa-solid fa-circle-plus" style="font-size: 26px;"></i>
-                        <span>Môn Học Mới</span>
+                        <i class="fa-solid fa-circle-plus" style="font-size: 28px; color: #2563eb;"></i>
+                        <span>Thêm Môn Học Mới</span>
                     </button>
                 </div>
 
-                <div style="margin-top: 24px; text-align: right;">
-                    <button class="btn-action" @click="generatePreview" :disabled="!fileTkb || loading">
+                <!-- THANH TỔNG HỢP & NÚT TẠO LỊCH -->
+                <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid #f1f5f9; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
+                    <div style="font-size: 13px; color: #64748b; display: flex; align-items: center; gap: 14px;">
+                        <span><i class="fa-solid fa-layer-group" style="color: #2563eb;"></i> Tổng số môn: <strong>{{ subjectBoxes.length }}</strong></span>
+                        <span><i class="fa-solid fa-file-circle-check" style="color: #10b981;"></i> Đã nạp file: <strong>{{ subjectBoxes.filter(b => b.file).length }}</strong></span>
+                    </div>
+
+                    <button class="btn-action" style="padding: 12px 28px; font-size: 15px; background: linear-gradient(135deg, #2563eb, #1d4ed8); box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);" @click="generatePreview" :disabled="!fileTkb || loading">
                         <span v-if="loading" class="spinner"></span>
-                        <i v-else class="fa-solid fa-bolt"></i>
-                        <span>{{ loading ? 'Đang tạo...' : 'Tạo Lịch Báo Dạy' }}</span>
+                        <i v-else class="fa-solid fa-bolt" style="font-size: 16px;"></i>
+                        <span>{{ loading ? 'Đang Xử Lý...' : 'Tạo Lịch Báo Dạy' }}</span>
                     </button>
                 </div>
             </section>
@@ -1183,11 +1501,15 @@
             el: '#app',
             data: {
                 gvName: 'Lâm Huệ Trí',
-                lopName: '5/5',
-                namHoc: '2026 - 2027',
-                startMonday: '2026-09-07',
+                lopName: '',
+                namHoc: '2026-2027',
+                startMonday: '',
                 selectedTuan: 1,
+                teacherRole: 'gvbm', // Mặc định Giáo Viên Bộ Môn
+                giaoanMode: 'master', // 'master' hoặc 'per_tiet'
                 fileTkb: null,
+                parsedSlots: [],
+                uniqueClasses: [],
                 subjectBoxes: [],
                 loading: false,
                 exporting: false,
@@ -1202,6 +1524,18 @@
                     detail: '',
                     stage: ''
                 }
+            },
+            created() {
+                // Tự động tính ngày Thứ 2 của tuần hiện tại (định dạng YYYY-MM-DD cho date picker)
+                const today = new Date();
+                const dayOfWeek = today.getDay(); // 0: CN, 1: T2, ..., 6: T7
+                const distanceToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+                const monday = new Date(today);
+                monday.setDate(today.getDate() + distanceToMonday);
+                const yyyy = monday.getFullYear();
+                const mm = String(monday.getMonth() + 1).padStart(2, '0');
+                const dd = String(monday.getDate()).padStart(2, '0');
+                this.startMonday = `${yyyy}-${mm}-${dd}`;
             },
             computed: {
                 sortedWeeks() {
@@ -1241,6 +1575,59 @@
                 toastWarning(msg, title = '') { this.showToast(msg, 'warning', title); },
                 toastInfo(msg, title = '') { this.showToast(msg, 'info', title); },
 
+                // Interactive TKB Grid Helpers
+                getGridSlot(thu, buoi, tiet) {
+                    let slot = this.parsedSlots.find(s => s.thu === thu && s.buoi === buoi && s.tiet_tkb === tiet);
+                    if (!slot) {
+                        slot = { thu: thu, buoi: buoi, tiet_tkb: tiet, mon: '', lop: '' };
+                        this.parsedSlots.push(slot);
+                    }
+                    return slot;
+                },
+                onGridCellChange() {
+                    // Tự động gom danh sách môn học độc bản từ Matrix TKB Grid
+                    const subjects = [];
+                    const seenSubj = new Set();
+                    const classes = [];
+                    const seenClass = new Set();
+
+                    this.parsedSlots.forEach(s => {
+                        if (s.mon && s.mon.strip ? s.mon.strip() : s.mon) {
+                            const m = s.mon.trim();
+                            if (!seenSubj.has(m)) {
+                                seenSubj.add(m);
+                                subjects.push(m);
+                            }
+                        }
+                        if (s.lop && s.lop.strip ? s.lop.strip() : s.lop) {
+                            const l = s.lop.trim();
+                            if (!seenClass.has(l) && l !== '5/5') {
+                                seenClass.add(l);
+                                classes.push(l);
+                            }
+                        }
+                    });
+
+                    this.uniqueClasses = classes;
+                    if (this.teacherRole === 'gvbm' && classes.length > 0) {
+                        this.lopName = classes.join('; ');
+                    }
+
+                    // Tự động cập nhật danh sách SubjectBoxes
+                    if (subjects.length > 0) {
+                        const currentFiles = {};
+                        this.subjectBoxes.forEach(b => {
+                            if (b.subjectName && b.file) {
+                                currentFiles[b.subjectName.trim()] = b.file;
+                            }
+                        });
+                        this.subjectBoxes = subjects.map(subj => ({
+                            subjectName: subj,
+                            file: currentFiles[subj] || null
+                        }));
+                    }
+                },
+
                 // Progress Bar tracking helpers
                 startProgress(title, detail = '') {
                     this.progress = {
@@ -1277,17 +1664,27 @@
                     this.fileTkb = file;
                     this.toastInfo(`Đã nạp tệp TKB: ${file.name}`, 'Nạp TKB');
 
-                    // Automatically call API to extract unique subjects from TKB
                     const formData = new FormData();
                     formData.append('file_tkb', file);
                     try {
                         const res = await axios.post(`${this.apiUrl}/api/parse-tkb`, formData);
-                        if (res.data && res.data.unique_subjects && res.data.unique_subjects.length > 0) {
-                            this.subjectBoxes = res.data.unique_subjects.map(subj => ({
-                                subjectName: subj,
-                                file: null
-                            }));
-                            this.toastSuccess(`Tự động nhận diện ${res.data.unique_subjects.length} môn học từ TKB!`, 'Phân Tích TKB');
+                        if (res.data) {
+                            if (res.data.slots && res.data.slots.length > 0) {
+                                this.parsedSlots = res.data.slots;
+                            }
+                            if (res.data.unique_classes && res.data.unique_classes.length > 0) {
+                                this.uniqueClasses = res.data.unique_classes;
+                                if (this.teacherRole === 'gvbm') {
+                                    this.lopName = res.data.unique_classes.join('; ');
+                                }
+                            }
+                            if (res.data.unique_subjects && res.data.unique_subjects.length > 0) {
+                                this.subjectBoxes = res.data.unique_subjects.map(subj => ({
+                                    subjectName: subj,
+                                    file: null
+                                }));
+                                this.toastSuccess(`Tự động bóc tách & hiển thị Bảng TKB Trực Quan!`, 'Phân Tích TKB');
+                            }
                         }
                     } catch (err) {
                         console.log('Parse TKB subject warning:', err);
@@ -1345,6 +1742,9 @@
                     formData.append('nam_hoc', this.namHoc);
                     formData.append('start_monday', this.formatDateStr(this.startMonday));
                     formData.append('file_tkb', this.fileTkb);
+                    if (this.parsedSlots && this.parsedSlots.length > 0) {
+                        formData.append('edited_tkb_slots', JSON.stringify(this.parsedSlots));
+                    }
 
                     this.subjectBoxes.forEach(box => {
                         if (box.subjectName && box.file) {
@@ -1402,6 +1802,9 @@
                     formData.append('nam_hoc', this.namHoc);
                     formData.append('start_monday', this.formatDateStr(this.startMonday));
                     formData.append('file_tkb', this.fileTkb);
+                    if (this.parsedSlots && this.parsedSlots.length > 0) {
+                        formData.append('edited_tkb_slots', JSON.stringify(this.parsedSlots));
+                    }
 
                     if (this.multiSchedule) {
                         formData.append('edited_multi_schedule', JSON.stringify(this.multiSchedule));

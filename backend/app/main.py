@@ -74,10 +74,12 @@ def get_favicon():
 
 
 
+from app.parsers.tkb_parser import auto_parse_tkb, extract_unique_subjects, extract_unique_classes
+
 @app.post("/api/parse-tkb", response_model=ParseTkbResponse)
 async def parse_tkb_endpoint(file_tkb: UploadFile = File(...)):
     """
-    Đọc file TKB → trả danh sách tiết + danh sách môn học độc bản (unique_subjects).
+    Đọc file TKB → trả danh sách tiết + danh sách môn học độc bản (unique_subjects) + danh sách lớp (unique_classes).
     """
     try:
         tkb_bytes = await file_tkb.read()
@@ -85,7 +87,8 @@ async def parse_tkb_endpoint(file_tkb: UploadFile = File(...)):
         if not slots:
             raise HTTPException(status_code=400, detail="Không tìm thấy tiết học nào từ file TKB.")
         unique_subjects = extract_unique_subjects(slots)
-        return ParseTkbResponse(unique_subjects=unique_subjects, slots=slots)
+        unique_classes = extract_unique_classes(slots)
+        return ParseTkbResponse(unique_subjects=unique_subjects, unique_classes=unique_classes, slots=slots)
     except HTTPException:
         raise
     except Exception as e:
@@ -110,7 +113,7 @@ async def generate_preview(request: Request):
         if hasattr(file_tkb, "seek"):
             await file_tkb.seek(0)
         tkb_bytes = await file_tkb.read()
-        slots = auto_parse_tkb(tkb_bytes, getattr(file_tkb, "filename", "TKB.docx"))
+        slots = _get_tkb_slots(form, tkb_bytes, getattr(file_tkb, "filename", "TKB.docx"))
         if not slots:
             raise HTTPException(status_code=400, detail="Không trích xuất được dữ liệu từ TKB.")
 
@@ -151,7 +154,7 @@ async def export_docx_endpoint(request: Request):
         if hasattr(file_tkb, "seek"):
             await file_tkb.seek(0)
         tkb_bytes = await file_tkb.read()
-        slots = auto_parse_tkb(tkb_bytes, getattr(file_tkb, "filename", "TKB.docx"))
+        slots = _get_tkb_slots(form, tkb_bytes, getattr(file_tkb, "filename", "TKB.docx"))
         if not slots:
             raise HTTPException(status_code=400, detail="Không trích xuất được dữ liệu từ TKB.")
 
@@ -202,6 +205,28 @@ async def export_multi_docx_endpoint(request: Request):
 # ─────────────────────────────────────────
 # HELPER
 # ─────────────────────────────────────────
+def _get_tkb_slots(form, tkb_bytes: bytes, filename: str) -> List[TKBSlot]:
+    import json
+    edited_raw = form.get("edited_tkb_slots")
+    if edited_raw:
+        try:
+            data = json.loads(edited_raw)
+            if isinstance(data, list) and len(data) > 0:
+                res = []
+                for s in data:
+                    if isinstance(s, dict) and s.get("mon"):
+                        res.append(TKBSlot(
+                            thu=s.get("thu", "Hai"),
+                            buoi=s.get("buoi", "Sáng"),
+                            tiet_tkb=int(s.get("tiet_tkb", 1)),
+                            mon=str(s.get("mon", "")),
+                            lop=str(s.get("lop", "5/5"))
+                        ))
+                if res:
+                    return res
+        except Exception as ex:
+            print(f"[get_tkb_slots] Error parsing edited_tkb_slots: {ex}")
+    return auto_parse_tkb(tkb_bytes, filename)
 async def _parse_all_giaoan(form) -> List[LessonBlock]:
     """
     Đọc tất cả các file giáo án từ form (key bắt đầu bằng 'file_giaoan_').
